@@ -55,7 +55,7 @@ temp(compression_start) = Taf;
 mi = (pressure(compression_start) * vol(compression_start)) / (R * temp(compression_start));
 mf = mi / (1 + AFR/phi);
 
-%while error > tolerence
+while error > tolerence
     counter = counter + 1;
     %% Compression Numerical Analysis
     mass(compression_start:expansion_end) = mi;
@@ -120,8 +120,8 @@ mf = mi / (1 + AFR/phi);
     mass(compression_start) = mi;
     
     % Debugging output
-    fprintf("Iteration: %d, Error: %.6f, Taf: %.2f\n", counter, error, temp(intake_end));
-%end
+    fprintf("Iteration: %d, Error: %.6f, Temp: %.2f\n", counter, error, temp(intake_end));
+end
 
 %% Force Calculation
 fprintf("Converged with error %.6f after %d iterations\n", error, counter);
