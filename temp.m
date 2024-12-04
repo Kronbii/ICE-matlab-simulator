@@ -3,10 +3,10 @@ clear; clc
 
 %given: 
 offset =0; % offset in m
-a_radius = 50e-3; % crank radius in m
-l = 150e-3; % connecting rod in m
+a_radius = 46.5e-3; % crank radius in m
+l = 148.8e-3; % connecting rod in m
 theta = 1:720;
-B = 80e-3; % bore in m
+B = 83e-3; % bore in m
 L =2*a_radius; % stroke in m
 rc=9.8; % compression ratio
 CBF=0.95; % coefficient of burned fuel
@@ -19,16 +19,16 @@ g_int=1.2; % gamma for intake
 
 R=287;  % universal gas constant J/(kg.k)
 T_Scomp = 300; % initial temperature at compression(K)
-P_in = 0.9*101325; % starting pressure
-P_atm=0.9*101325; % atmospheric pressure
+P_in = 1*101325; % starting pressure
+P_atm= 1*101325; % atmospheric pressure
 
 rpm=2000; % N rev/min
 cd=0.7; % discharge coefficient
-Q_hv=44*10^6; % heating value (J/kg)
+Q_hv=43.5e6; % heating value (J/kg)
 sAFR = 14.7; % stoichiometric air to fuel ratio
 a1 = 5; % constant in Weibe function
 m1 = 2; % constant in Weibe function
-Phi = 0.98; % fuel/air equivalence ratio
+Phi = 1; % fuel/air equivalence ratio
 
 Vc=(pi*(B^2)*L/4)/(rc-1); %clearance volume
 Rf=l/a_radius; % Ratio of connecting rod length to crank radius

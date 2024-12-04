@@ -22,10 +22,9 @@ m = 2;
 %%Per Engine
 d_in_valve = 0.4*bore; %% mm
 d_out_valve = 0.4*bore; %% mm
-dt = 1/(rpm * 6); %% seconds
+dt = (1/(rpm*2*pi/60))*(pi/180); %% seconds
 Cd = 0.7; %% check unit
-Ati = (pi/4)*(d_in_valve)^2; 
-Ate = (pi/4)*(d_out_valve)^2;
+At = (pi/4)*(d_in_valve)^2; 
 Pe = 1 * p_atm; %% pascal
 Pi = 1 * p_atm; %% pascal
 A_cyl = (pi/4) * bore^2;
@@ -87,22 +86,16 @@ mf = mi / (1 + AFR/phi);
     %% Exhaust Numerical Analysis
     mass(exhaust_start) = mi;
     
-    %pressure(exhaust_start) = pressure(expansion_end);
-    %temp(exhaust_start) = temp(exhaust_end);
+    pressure(exhaust_start) = pressure(expansion_end);
+    temp(exhaust_start) = temp(expansion_end);
     
-    pressure(exhaust_start)= (((temp(expansion_end) * mi *R)/vol(exhaust_start))^(ye))*(1/(pressure(expansion_end)^(ye-1)));
-    temp(exhaust_start)= (pressure(exhaust_start)*vol(exhaust_end)/(mi*R));
+    %pressure(exhaust_start)= (((temp(expansion_end) * mi *R)/vol(exhaust_start))^(ye))*(1/(pressure(expansion_end)^(ye-1)));
+    %temp(exhaust_start)= (pressure(exhaust_start)*vol(exhaust_end)/(mi*R));
 
     for i = (exhaust_start + 1):exhaust_end
-        mass(i) = real( mass(i - 1) - dt * ((Cd * Ate * pressure(i - 1)) / ...
-            sqrt((pressure(i - 1) * vol(i - 1)) / mass(i - 1))) * ...
-            ((Pe / pressure(i - 1))^(1 / ye)) * ...
-            ((2 * ye) / (ye - 1) * (1 - (Pe / pressure(i - 1))^((ye - 1) / ye)))^0.5);
-
-        pressure(i) = (((temp(i - 1) * mass(i) * R) / vol(i))^ye) * ...
-            (1/((pressure(i-1))^(ye - 1)));
-        
-        temp(i) = real((pressure(i) * vol(i)) / (mass(i) * R));
+      mass(i)=real(mass(i-1)-(dt*((Cd*At*pressure(i-1))/(sqrt((pressure(i-1)*vol(i-1))/mass(i-1))))*((Pe/pressure(i-1))^(1/ye))*((((2*ye)/(ye-1))*(1-(Pe/pressure(i-1))^((ye-1)/ye)))^0.5)));
+      pressure(i) = ((((temp(i-1))*(mass(i))*R)/(vol(i)))^ye) * (1/((pressure(i-1))^(ye-1)));
+      temp(i) = (pressure(i)*(vol(i)))/(R*mass(i));
     end
 
     %% Intake Numerical Analysis
@@ -112,13 +105,10 @@ mf = mi / (1 + AFR/phi);
     pressure(intake_start)=(mass(intake_start)* R * temp(intake_start))/(vol(intake_start));
     
     for i = (intake_start + 1):intake_end    
-        mass(i) = real(mass(i - 1) + dt * ((Cd * Ati * Pi) / (sqrt(R * Taf))) * ...
-            ((pressure(i - 1) / Pi)^(1 / yi)) * ...
-            (((2 * yi) / (yi - 1)) * (1 - ((2 * yi) / (yi - 1))^((yi - 1) / (yi))))^0.5);
- 
-        xr = mass(exhaust_end) / mass(i);
-        temp(i) = real(xr * temp(exhaust_end) + (1 - xr) * Taf);
-        pressure(i) = (mass(i) * R * temp(i))/vol(i);
+        mass(i)=real(mass(i-1)+(dt*((Cd*At*pressure(i-1))/(sqrt(R*Taf)))*((pressure(i-1)/Pi)^(1/yi))*((((2*yi)/(yi-1))*(1-(pressure(i-1)/Pi)^((yi-1)/yi))).^0.5)));
+        xr = mass(exhaust_end)/mass(i);
+        temp(i) = xr*temp(exhaust_end) + ((1- xr))*Taf;
+        pressure(i) = (mass(i)*R*temp(i))/vol(i);
     end
 
     % Calculate error based on the temperature change
