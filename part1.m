@@ -120,6 +120,111 @@ vdisp1 = ((pi*bore^2)/4)*max(s_length1);
 total_volume0 = vdisp0/(rc0 -1) + ((pi*bore^2)/4)*c_length0;
 total_volume1 = vdisp1/(rc1 -1) + ((pi*bore^2)/4)*c_length1;
 
+%% Plots
+% Plot Velocities vs Driver Angle
+figure('Name', 'Velocity vs Driver Angle');
+hold on; % Hold on to add more elements to the plot
+grid on;
+% Plot Title
+title('Piston Velocity vs Driver Angle', 'FontWeight', 'bold', 'FontSize', 14);
+% Plot the velocities
+plot(crank_angle, vel_piston0, 'LineWidth', 2, 'DisplayName', 'No Offset');
+plot(crank_angle, vel_piston1, 'LineWidth', 2, 'DisplayName', 'Offseted');
+% Axis labels
+xlabel('Crank Angle (degrees)', 'FontWeight', 'bold');
+ylabel('Velocity (cm/s)', 'FontWeight', 'bold');
+% Set limits
+xlim([0 length(crank_angle)]); % Assuming crank_angle ranges from 0 to 360 degrees
+% Legend
+legend('Location', 'best', 'FontSize', 10);
+%calculate max values
+[piston0_max, piston0_index] = max(vel_piston0);
+[piston1_max, piston1_index] = max(vel_piston1);
+plot(crank_angle(piston0_index), piston0_max, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Max 18mm (%.1f, %.2f)', crank_angle(piston0_index), piston0_max)); 
+plot(crank_angle(piston1_index), piston1_max, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Max 36mm (%.1f, %.2f)', crank_angle(piston1_index), piston1_max));
+%calculate minimum values
+[piston0_min, piston0_index] = min(vel_piston0);
+[piston1_min, piston1_index] = min(vel_piston1);
+plot(crank_angle(piston0_index), piston0_min, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Min 18mm (%.1f, %.2f)', crank_angle(piston0_index), piston0_min)); 
+plot(crank_angle(piston1_index), piston1_min, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Min 36mm (%.1f, %.2f)', crank_angle(piston1_index), piston1_min));
+xline(90, 'k--', 'DisplayName', '90 degrees')
+xline(180, 'k--', 'DisplayName', '180 degrees')
+xline(270, 'k--', 'DisplayName', '270 degrees')
+% Set axis properties
+set(gca, 'FontSize', 12, 'FontWeight', 'bold');
+hold off;
+ 
+ 
+ 
+% Plot Displacement vs Driver Angle
+figure('Name', 'Displacement vs Driver Angle');
+hold on; % Hold on to add more elements to the plot
+grid on;
+% Plot Title
+title('Piston Displacement vs Driver Angle', 'FontWeight', 'bold', 'FontSize', 14);
+% Plot the velocities
+plot(crank_angle, c_length0, 'LineWidth', 2, 'DisplayName', 'No Offset');
+plot(crank_angle, c_length1, 'LineWidth', 2, 'DisplayName', 'Offseted');
+% Axis labels
+xlabel('Crank Angle (degrees)', 'FontWeight', 'bold');
+ylabel('Displacement (cm)', 'FontWeight', 'bold');
+% Set limits
+xlim([0 length(crank_angle)]); % Assuming crank_angle ranges from 0 to 360 degrees
+% Legend
+legend('Location', 'best', 'FontSize', 10);
+%calculate max values
+[piston0_max, piston0_index] = max(c_length0);
+[piston1_max, piston1_index] = max(c_length1);
+plot(crank_angle(piston0_index), piston0_max, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Max 18mm (%.1f, %.2f)', crank_angle(piston0_index), piston0_max)); 
+plot(crank_angle(piston1_index), piston1_max, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Max 36mm (%.1f, %.2f)', crank_angle(piston1_index), piston1_max));
+%calculate minimum values
+[piston0_min, piston0_index] = min(c_length0);
+[piston1_min, piston1_index] = min(c_length1);
+plot(crank_angle(piston0_index), piston0_min, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Min 18mm (%.1f, %.2f)', crank_angle(piston0_index), piston0_min)); 
+plot(crank_angle(piston1_index), piston1_min, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Min 36mm (%.1f, %.2f)', crank_angle(piston1_index), piston1_min));
+xline(90, 'k--', 'DisplayName', '90 degrees')
+xline(180, 'k--', 'DisplayName', '180 degrees')
+xline(270, 'k--', 'DisplayName', '270 degrees')
+% Set axis properties
+set(gca, 'FontSize', 12, 'FontWeight', 'bold');
+hold off;
+ 
+ 
+ 
+% Plot Cylinder Volume vs Driver Angle
+figure('Name', 'Piston Volume vs Driver Angle');
+hold on; % Hold on to add more elements to the plot
+grid on;
+% Plot Title
+title('Cylinder Volume vs Driver Angle', 'FontWeight', 'bold', 'FontSize', 14);
+% Plot the velocities
+plot(crank_angle, total_volume0*10^6, 'LineWidth', 2, 'DisplayName', 'No Offset');
+plot(crank_angle, total_volume1*10^6, 'LineWidth', 2, 'DisplayName', 'Offseted');
+% Axis labels
+xlabel('Crank Angle (degrees)', 'FontWeight', 'bold');
+ylabel('Piston Volume (cc)', 'FontWeight', 'bold');
+% Set limits
+xlim([0 length(crank_angle)]); % Assuming crank_angle ranges from 0 to 360 degrees
+% Legend
+legend('Location', 'best', 'FontSize', 10);
+%calculate max values
+[piston0_max, piston0_index] = max(total_volume0);
+[piston1_max, piston1_index] = max(total_volume1);
+plot(crank_angle(piston0_index), piston0_max, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Max 18mm (%.1f, %.2f)', crank_angle(piston0_index), piston0_max)); 
+plot(crank_angle(piston1_index), piston1_max, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Max 36mm (%.1f, %.2f)', crank_angle(piston1_index), piston1_max));
+%calculate minimum values
+[piston0_min, piston0_index] = min(total_volume0);
+[piston1_min, piston1_index] = min(total_volume1);
+plot(crank_angle(piston0_index), piston0_min, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Min 18mm (%.1f, %.2f)', crank_angle(piston0_index), piston0_min)); 
+plot(crank_angle(piston1_index), piston1_min, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Min 36mm (%.1f, %.2f)', crank_angle(piston1_index), piston1_min));
+xline(90, 'k--', 'DisplayName', '90 degrees')
+xline(180, 'k--', 'DisplayName', '180 degrees')
+xline(270, 'k--', 'DisplayName', '270 degrees')
+% Set axis properties
+set(gca, 'FontSize', 12, 'FontWeight', 'bold');
+hold off;
+
+%% Data save
 save('R:\University\Courses\Fall 24\Automotive\assignment-3\codes\part1.mat','a2x', 'a2y', 'a3x', 'a3y', 'w3', 'w2', 'alpha2',...
                 'alpha3', 'g', 'm2', 'm3', 'm4', 'OG2', 'AG3', 'BG3', 'J3', 'coupler_angle0', ...
                 'crank_angle', 'crank_length', 'coupler_length', 'total_volume0', 'total_volume1', 'bore', 'rpm', 'p_atm', 'a4y')

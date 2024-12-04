@@ -73,6 +73,7 @@ m_f = m_i / (1 + AFR);
 T(theta_end_comb)=((CBF*m_f*Qhv)/(m_i*c_v))+T(theta_end_comp); 
 P(theta_end_comb)=m_i*R*T(theta_end_comb)/V(theta_end_comb); 
 P(theta_start_comb)= P(theta_end_comp); 
+
 for i=theta_start_comb:theta_end_comb 
 xb(i-theta_start_comb+1)= 1 - exp(-a * ((i - theta_start_comb) / (theta_end_comb - theta_start_comb))^(m + 1)); 
 P(i) = (((P(theta_end_comb)*V(theta_end_comb)^(g_comb))

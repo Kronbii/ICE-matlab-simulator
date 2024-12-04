@@ -6,10 +6,11 @@ load('R:\University\Courses\Fall 24\Automotive\assignment-3\codes\part1.mat')
 %% Variables and constants
 %%Constants
 vol = total_volume0; 
-Taf = 322; %% kelvin
+Taf = 303;  T_intake = 300; %% kelvin
 yi =  1.3;
 yc = 1.25;
 ye = 1.48;
+yex =1.35;
 R = 287; %% gas constant of air (J/kg * Kelvin)
 phi = 1;
 CBF = 0.96; 
@@ -50,20 +51,24 @@ counter = 0;
 
 %while error > tolerence
     counter = counter + 1;
-    pressure(compression_start) = Pi;
-    temp(compression_start) = 
     %% Compression Numerical Analysis
-    mi = (pressure(compression_start) * vol(compression_start)) / (R * temp(compression_start));
+    pressure(compression_start) = Pi;
+    temp(compression_start) = T_intake;
+    mi = (Pi * vol(compression_start)) / (R * T_intake);
     mf = mi / (1 + AFR/phi);
-    mass(compression_start:expansion_end) = mi; % Corrected indexing
+    mass(compression_start:expansion_end) = mi;
+    
     for i = (compression_start + 1):compression_end
-        pressure(i) = (pressure(compression_start) * vol(compression_start)^yi) / (vol(i)^yi);
+        pressure(i) = (Pi * vol(compression_start)^yi) / (vol(i)^yi);
         temp(i) = (pressure(i) * vol(i)) / (mi * R);
     end
 
     %% Combustion Numerical Analysis
-    temp(combustion_end) = (CBF * mf * Qhv) / (mi * cv) + temp(combustion_start);
+    temp(combustion_end) = (CBF * mf * Qhv) / (mi * cv) + temp(combustion_end);
     pressure(combustion_end) = (mi * R * temp(combustion_end)) / (vol(combustion_end));
+    pressure(combustion_start) = pressure(compression_end);
+    temp(combustion_start) = temp(compression_end);
+    
     for i = (combustion_start + 1):(combustion_end - 1)
         xb(i) = 1 - exp(-a * ((i - combustion_start) / (combustion_end - combustion_start))^(m + 1));
         pressure(i) = (xb(i) * ((pressure(combustion_end) * vol(combustion_end)^yc) - ...
@@ -72,44 +77,51 @@ counter = 0;
     end
 
     %% Expansion Numerical Analysis
+    pressure(expansion_start) = pressure(combustion_end);
+    temp(expansion_start) = temp(combustion_end);
+    
     for i = (expansion_start + 1):expansion_end
         pressure(i) = (pressure(expansion_start) * vol(expansion_start)^ye) / (vol(i)^ye);
         temp(i) = (pressure(i) * vol(i)) / (mi * R);
     end
     
     %% Exhaust Numerical Analysis
+    mass(exhaust_start) = mi;
+    pressure(exhaust_start) = pressure(expansion_end);
+    temp(exhaust_start) = temp(expansion_end);
+    
     for i = (exhaust_start + 1):exhaust_end
         mass(i) = mass(i - 1) - dt * ((Cd * Ate * pressure(i - 1)) / ...
             sqrt((pressure(i - 1) * vol(i - 1)) / mass(i - 1))) * ...
-            ((Pe / pressure(i - 1))^(1 / ye)) * ...
-            ((2 * ye) / (ye - 1) * (1 - (Pe / pressure(i - 1))^((ye - 1) / ye)))^0.5;
-        mass(i) = real(mass(i));
-
-        pressure(i) = (((temp(i - 1) * mass(i) * R) / vol(i))^ye) * ...
-            (pressure(i - 1))^(1 - ye);
+            ((Pe / pressure(i - 1))^(1 / yex)) * ...
+            ((2 * yex) / (yex - 1) * (1 - (Pe / pressure(i - 1))^((yex - 1) / yex)))^0.5;
+        pressure(i) = (((temp(i - 1) * mass(i) * R) / vol(i))^yex) * ...
+            (pressure(i - 1))^(1 - yex);
         temp(i) = (pressure(i) * vol(i)) / (mass(i) * R);
     end
 
     %% Intake Numerical Analysis
     mass(intake_start) = mass(exhaust_end);
-    pressure(intake_start:intake_end-1) = Pi;
+    pressure(intake_start) = pressure(exhaust_end);
     temp(intake_start) = temp(exhaust_end);
     
     for i = (intake_start + 1):intake_end    
-        mass(i) = mass(i - 1) + dt * ((Cd * Ati * Pi) / (sqrt(R * Taf))) * ...
+        mass(i) = mass(i - 1) + dt * ((Cd * Ati * Pi) / (sqrt(R * temp(intake_start)))) * ...
             ((pressure(i - 1) / Pi)^(1 / yi)) * ...
             (((2 * yi) / (yi - 1)) * (1 - ((2 * yi) / (yi - 1))^((yi - 1) / (yi))))^0.5;
-        mass(i) = real(mass(i));
+        
+        pressure(i) = (((temp(i-1)*mass(i)*R) / vol(i))^yi)*(1/(pressure(i-1)^(yi-1))); 
+        
         xr = mass(exhaust_end) / mass(i);
-        temp(i) = xr * temp(exhaust_end) + (1 - xr) * temp(compression_start);
+        temp(i) = xr * temp(exhaust_end) + (1 - xr) * Taf;
     end
 
     % Calculate error based on the temperature change
-    error = abs(temp(intake_end) - Taf);
-    Taf = temp(intake_end);
+    error = abs(temp(intake_end) - T_intake);
+    T_intake = temp(intake_end);
 
     % Debugging output
-    fprintf("Iteration: %d, Error: %.6f, Taf: %.2f\n", counter, error, Taf);
+    fprintf("Iteration: %d, Error: %.6f, Taf: %.2f\n", counter, error, T_intake);
 %end
 
 %% Force Calculation
