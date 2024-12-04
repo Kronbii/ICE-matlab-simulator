@@ -55,7 +55,7 @@ previous_Taf = Taf; % Store previous Taf for comparison
 tolerence= 1e-2;
 counter = 0;
 
-while error > tolerence
+%while error > tolerence
     counter = counter + 1;
     pressure(compression_start) = p_atm;
     %% Compression Numerical Analysis
@@ -116,7 +116,7 @@ while error > tolerence
 
     % Debugging output
     fprintf("Iteration: %d, Error: %.6f, Taf: %.2f\n", counter, error, Taf);
-end
+%end
 
 %% Force Calculation
 fprintf("Converged with error %.6f after %d iterations\n", error, counter);
@@ -124,6 +124,24 @@ fprintf("Converged with error %.6f after %d iterations\n", error, counter);
 F_atm = p_atm * A_cyl;
 Fg = pressure * A_cyl;
 
+
+%% Plotting Pressure vs theta
+figure;  % Create a new figure window
+plot(crank_angle, pressure/p_atm);
+xlabel('Volume/Vmax');  % Label for x-axis
+ylabel('Pressure/Patm'); % Label for y-axis 
+title('Pressure vs Volume'); % Title of the plot
+grid on;  % Add grid for better readability
+
+%% Plotting Pressure vs Volume
+figure;  % Create a new figure window
+plot(vol/max(vol), pressure/p_atm);
+xlabel('Volume/Vmax');  % Label for x-axis
+ylabel('Pressure/Patm'); % Label for y-axis 
+title('Pressure vs Volume'); % Title of the plot
+grid on;  % Add grid for better readability
+
+%% saving data
 save('R:\University\Courses\Fall 24\Automotive\assignment-3\codes\part2.mat', 'pressure', 'F_atm', 'Fg')
 disp('donee')
 disp('idontknow')
