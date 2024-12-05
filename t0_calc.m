@@ -1,6 +1,6 @@
 clc;
-load('R:\University\Courses\Fall 24\Automotive\assignment-3\codes\part2.mat')
-load('R:\University\Courses\Fall 24\Automotive\assignment-3\codes\part1.mat')
+load('part2.mat')
+load('part1.mat')
 
 T0 = zeros(1, length(crank_angle));
 
@@ -38,31 +38,13 @@ end
 
 T0 = -T0;
 
-% Initialize the total torque
-torque_total = zeros(size(crank_angle));
-
-% Define the phase shift between cylinders (120 degrees)
-phase_shift = 120;
-
-% Loop over 6 cylinders and accumulate the torque with phase shifts
-for i = 0:5
-    % Shift the torque curve by i * phase_shift degrees
-    theta_shifted = mod(crank_angle + i * phase_shift, 720);
-    % Interpolate the shifted torque values
-    torque_shifted = interp1(crank_angle, T0, theta_shifted, 'linear', 0);
-    % Add the shifted torque to the total torque
-    torque_total = torque_total + torque_shifted;
-end
-
-torque_total(720) =163675000;
-
 % Plot the torque for a single cylinder and the total torque
 figure;
 hold on;
-plot(crank_angle, (torque_total-163675000)*1.54, 'r', 'DisplayName', 'Total Torque (6 Cylinders)');
+plot(crank_angle, T0, 'r');
 xlabel('Crank Angle (degrees)');
 ylabel('Torque (N-m)');
 legend show;
-title('Torque Plot for a 6-Cylinder Engine with 120 Degree Phase Shift');
+title('Torque Plot');
 grid on;
 disp('doneee')

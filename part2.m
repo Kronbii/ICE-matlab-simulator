@@ -110,6 +110,7 @@ while error > tolerence
         xr = mass(exhaust_end)/mass(i);
         temp(i) = xr*temp(exhaust_end) + ((1- xr))*Taf;
         pressure(i) = (mass(i)*R*temp(i))/vol(i);
+        %pressure(i) = Pi;
     end
 
     % Calculate error based on the temperature change
