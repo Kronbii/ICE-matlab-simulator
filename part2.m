@@ -1,7 +1,7 @@
 clear all; clc
 
 %% Load Necessary Data
-load('R:\7arta2a\Github Repos\V4-ICE-Engine-Simulator\mat-files\part1.mat') 
+load('part1.mat') 
 
 %% Variables and constants
 %%Constants
@@ -67,10 +67,11 @@ while error > tolerence
     %% Combustion Numerical Analysis
     pressure(combustion_start) = pressure(compression_end);
     temp(combustion_start) = temp(compression_end);
+    
     temp(combustion_end) = (CBF * mf * Qhv) / (mi * cv) + temp(combustion_start);
     pressure(combustion_end) = (mi * R * temp(combustion_end)) / (vol(combustion_end));
     
-    for i = (combustion_start + 1):(combustion_end - 1)
+    for i = (combustion_start):(combustion_end - 1)
         xb(i) = 1 - exp(-a * ((crank_angle(i) - combustion_start) / (combustion_end - combustion_start))^(m + 1));
         pressure(i) = (xb(i) * ((pressure(combustion_end) * vol(combustion_end)^yc) - ...
             (pressure(combustion_start) * vol(combustion_start)^yc)) + ...
@@ -100,9 +101,9 @@ while error > tolerence
 
     %% Intake Numerical Analysis
     mass(intake_start) = mass(exhaust_end);
-    xr = mass(exhaust_end)/mass(intake_start);
-    temp(intake_start) = xr * temp(exhaust_end) + (1 - xr) * Taf;
-    pressure(intake_start)=(mass(intake_start)* R * temp(intake_start))/(vol(intake_start));
+    
+    pressure(intake_start) = pressure(exhaust_end);
+    temp(intake_start) = temp(exhaust_end);
     
     for i = (intake_start + 1):intake_end    
         mass(i)=real(mass(i-1)+(dt*((Cd*At*pressure(i-1))/(sqrt(R*Taf)))*((pressure(i-1)/Pi)^(1/yi))*((((2*yi)/(yi-1))*(1-(pressure(i-1)/Pi)^((yi-1)/yi))).^0.5)));
@@ -147,6 +148,6 @@ title('Pressure vs Volume'); % Title of the plot
 grid on;  % Add grid for better readability
 
 %% saving data
-save('R:\7arta2a\Github Repos\V4-ICE-Engine-Simulator\mat-files\part2.mat', 'pressure', 'F_atm', 'Fg')
+save('part2.mat', 'pressure', 'F_atm', 'Fg')
 disp('donee')
 disp('stable1.1')
