@@ -9,6 +9,7 @@ temp = zeros(1, length(crank_angle));
 pressure = zeros(1, length(crank_angle));
 mass = zeros(1, length(crank_angle));
 xb = zeros(1, combustion_end - combustion_start);
+
 temp(compression_start) = T_initial; 
 
 %% Numerical Analysis

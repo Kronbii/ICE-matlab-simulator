@@ -43,10 +43,14 @@ plot([o1_x crank_x1], [o1_y crank_y1], [crank_x1 coupler_x1], [crank_y1 coupler_
      [o2_x crank_x2], [o2_y crank_y2], [crank_x2 coupler_x2], [crank_y2 coupler_y2], ...
      [o3_x crank_x3], [o3_y crank_y3], [crank_x3 coupler_x3], [crank_y3 coupler_y3], ...
      [o4_x crank_x4], [o4_y crank_y4], [crank_x4 coupler_x4], [crank_y2 coupler_y4])
-rectangle('Position', [-crank_length, -crank_length, 2*crank_length, 2*crank_length], 'Curvature', [1, 1])
+ 
 rectangle('Position', [coupler_x1-bore/4 coupler_y1-bore/4 bore/2 bore/2])
+rectangle('Position', [coupler_x2-bore/4 coupler_y2-bore/4 bore/2 bore/2])
+rectangle('Position', [coupler_x3-bore/4 coupler_y3-bore/4 bore/2 bore/2])
+rectangle('Position', [coupler_x4-bore/4 coupler_y4-bore/4 bore/2 bore/2])
+
 axis equal;
-axis([-100 100 -100 100])
+axis([-10 45 -10 25])
 pause(0.0001);
 
 end
