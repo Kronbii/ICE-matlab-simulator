@@ -96,6 +96,26 @@ plot([o2_x-bore/4 o2_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bor
 plot([o3_x-bore/4 o3_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
 plot([o4_x-bore/4 o4_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
 
+if crank_angle(i) >= combustion_start-360 && crank_angle(i) <= combustion_end-360
+    % Draw the rectangle only if the angle is between alpha and beta
+    rectangle('Position', [o1_x-bore/4, max(s_length0)+bore/4, bore/2, dclear], 'FaceColor', 'yellow', 'EdgeColor', 'yellow', 'LineWidth', 2);
+end
+
+if crank_angle(i) >= combustion_start-180 && crank_angle(i) <= combustion_end-180
+    % Draw the rectangle only if the angle is between alpha and beta
+    rectangle('Position', [o3_x-bore/4, max(s_length0)+bore/4, bore/2, dclear], 'FaceColor', 'yellow', 'EdgeColor', 'yellow', 'LineWidth', 2);
+end
+
+if crank_angle(i) >= combustion_start && crank_angle(i) <= combustion_end
+    % Draw the rectangle only if the angle is between alpha and beta
+    rectangle('Position', [o4_x-bore/4, max(s_length_shifted)+bore/4, bore/2, dclear], 'FaceColor', 'yellow', 'EdgeColor', 'yellow', 'LineWidth', 2);
+end
+
+if crank_angle(i) >= combustion_start+180 && crank_angle(i) <= combustion_end+180
+    % Draw the rectangle only if the angle is between alpha and beta
+    rectangle('Position', [o2_x-bore/4, max(s_length_shifted)+bore/4, bore/2, dclear], 'FaceColor', 'yellow', 'EdgeColor', 'yellow', 'LineWidth', 2);
+end
+
 % Set axis equal to maintain aspect ratio
 axis equal;
 axis([o1_x-plot_offset, plot_width+plot_offset, o1_y-plot_offset, plot_length+plot_offset])
@@ -105,6 +125,6 @@ rectangle('Position', [coupler_x2-bore/4 coupler_y2-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x3-bore/4 coupler_y3-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x4-bore/4 coupler_y4-bore/4 bore/2 bore/2])
 
-pause(0.0001);
+pause(0.000001);
 hold off;
 end
