@@ -37,13 +37,32 @@ for i=1:length(crank_angle)
 end
 
 T0 = -T0;
+T0(1:300) =  0;
+T0(540:720) = 0;
+T1 = circshift(T0, 180);
+T2 = circshift(T0, 360);
+T3 = circshift(T0, 540);
+
+T_total = T0 + T1 + T2 + T3;
 
 % Plot the torque for a single cylinder and the total torque
 figure;
 hold on;
 plot(crank_angle, T0, 'r');
+% plot(crank_angle, T1, 'r');
+% plot(crank_angle, T2, 'r');
+% plot(crank_angle, T3, 'r');
 xlabel('Crank Angle (degrees)');
 ylabel('Torque (N-m)');
+legend show;
+title('Torque Plot');
+grid on;
+
+figure;
+hold on;
+plot(crank_angle, T_total, 'r');
+xlabel('Crank Angle (degrees)');
+ylabel('Torque total (N-m)');
 legend show;
 title('Torque Plot');
 grid on;

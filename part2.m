@@ -6,7 +6,7 @@ load('part1.mat')
 %% Variables and constants
 %%Constants
 vol = total_volume0; 
-Taf = 300; %% kelvin
+Taf = 300; T_inital = 300; %% kelvin
 yi =  1.3;
 yc = 1.25;
 ye = 1.48;
@@ -47,17 +47,17 @@ mass = zeros(1, length(crank_angle));
 xb = zeros(1, combustion_end - combustion_start);
 
 error = inf;
-tolerence= 1e-2;
+tolerence= 1e-3;
 counter = 0;
 
-pressure(compression_start) = Pi;
-temp(compression_start) = Taf; 
-mi = (pressure(compression_start) * vol(compression_start)) / (R * temp(compression_start));
-mf = mi / (1 + AFR/phi);
+temp(compression_start) = T_inital; 
 
 while error > tolerence
     counter = counter + 1;
     %% Compression Numerical Analysis
+    pressure(compression_start) = Pi;
+    mi = (pressure(compression_start) * vol(compression_start)) / (R * temp(compression_start));
+    mf = mi / (1 + AFR/phi);
     mass(compression_start:expansion_end) = mi;
     for i = (compression_start + 1):compression_end
         pressure(i) = (pressure(compression_start) * (vol(compression_start))^yi) / ((vol(i))^yi);
@@ -116,10 +116,6 @@ while error > tolerence
     % Calculate error based on the temperature change
     error = abs(temp(intake_end) - temp(compression_start));
     temp(compression_start) = temp(intake_end);
-    pressure(compression_start) = pressure(intake_end);
-    mi = (pressure(compression_start) * vol(compression_start)) / (R * temp(compression_start));
-
-    mass(compression_start) = mi;
     
     % Debugging output
     fprintf("Iteration: %d, Error: %.6f, Temp: %.2f\n", counter, error, temp(intake_end));
