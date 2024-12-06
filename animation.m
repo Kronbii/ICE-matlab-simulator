@@ -9,16 +9,20 @@ bore = 100*bore;
 
 o1_x = 0; o1_y = 0;
 
-o2_x = 1.5*bore; o2_y = 0;
+o2_x = (2.2*crank_length); o2_y = 0;
 
-o3_x = 3*bore; o3_y = 0;
+o3_x = 2*(2.2*crank_length); o3_y = 0;
 
-o4_x = 4.5*bore; o4_y = 0;
+o4_x = 3*(2.2*crank_length); o4_y = 0;
 
 figure;
 
 vclear= vdisp0/(rc0 -1);
 dclear = 400*vclear/(pi*(bore/100)^2);
+
+min_width = (o4_x - o1_x);
+max_offset = crank_length + 3;
+min_length = crank_length + max(s_length0) + dclear;
 
 crank_angle_shifted= circshift(crank_angle, 180);
 s_length_shifted = circshift(s_length0, 180);
@@ -77,13 +81,14 @@ plot([o4_x-bore/4 o4_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bor
 
 % Set axis equal to maintain aspect ratio
 axis equal;
+axis([o1_x-max_offset min_width+max_offset o1_y-max_offset min_length+max_offset])
  
 rectangle('Position', [coupler_x1-bore/4 coupler_y1-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x2-bore/4 coupler_y2-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x3-bore/4 coupler_y3-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x4-bore/4 coupler_y4-bore/4 bore/2 bore/2])
 
-axis([-10 45 -10 30])
+% axis([-10 40 -10 30])
 pause(0.0001);
 hold off;
 end

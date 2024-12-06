@@ -9,11 +9,11 @@ bore = 100*bore;
 
 o1_x = 0; o1_y = 0;
 
-o2_x = 1.5*bore; o2_y = 0;
+o2_x = 2*crank_length + off; o2_y = 0;
 
-o3_x = 3*bore; o3_y = 0;
+o3_x = 4*crank_length; o3_y = 0;
 
-o4_x = 4.5*bore; o4_y = 0;
+o4_x = 6*crank_length; o4_y = 0;
 
 figure;
 
@@ -83,7 +83,7 @@ rectangle('Position', [coupler_x2-bore/4 coupler_y2-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x3-bore/4 coupler_y3-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x4-bore/4 coupler_y4-bore/4 bore/2 bore/2])
 
-axis([-10 45 -10 30])
+axis([-10 40 -10 30])
 pause(0.0001);
 hold off;
 end
