@@ -1,17 +1,11 @@
 clear all; clc
 
 %% Load Necessary Data
+load('
 load('part1.mat')
 
-%% Variables
-vol = total_volume0; 
-temp = zeros(1, length(crank_angle)); 
-pressure = zeros(1, length(crank_angle));
-mass = zeros(1, length(crank_angle));
-xb = zeros(1, combustion_end - combustion_start);
-temp(compression_start) = T_initial; 
+temp(compression_start) = T_inital; 
 
-%% Numerical Analysis
 while error > tolerence
     counter = counter + 1;
     %% Compression Numerical Analysis
@@ -105,6 +99,6 @@ title('Pressure vs Volume'); % Title of the plot
 grid on;  % Add grid for better readability
 
 %% saving data
-save('part2.mat')
+save('part2.mat', 'pressure', 'F_atm', 'Fg')
 disp('donee')
 disp('stable1.1')

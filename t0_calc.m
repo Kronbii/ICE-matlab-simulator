@@ -1,6 +1,5 @@
 clc;
 load('part2.mat')
-load('part1.mat')
 
 T0 = zeros(1, length(crank_angle));
 
