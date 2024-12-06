@@ -58,12 +58,13 @@ Pi = 1 * p_atm; %% pascal
 A_cyl = (pi/4) * bore^2;
 
 %% Valve Timings
+combustion_shift = 30;
 intake_start = 1;
 intake_end = 222;
 compression_start = 223;
 compression_end = 329;
-combustion_start = 330;
-combustion_end = 389;
+combustion_start = 360 - combustion_shift;
+combustion_end = 360 + combustion_shift -1;
 expansion_start = 390;
 expansion_end = 487;
 exhaust_start = 488;

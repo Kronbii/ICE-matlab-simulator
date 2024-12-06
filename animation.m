@@ -5,7 +5,11 @@ load('part2.mat')
 coupler_length = coupler_length *100;
 crank_length = crank_length * 100;
 s_length0 = 100*s_length0;
+c_length0 = 100*s_length0;
+
 bore = 100*bore;
+
+combustion_shift = combustion_shift - 5;
 
 o1_x = 0; o1_y = 0;
 
@@ -96,24 +100,24 @@ plot([o2_x-bore/4 o2_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bor
 plot([o3_x-bore/4 o3_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
 plot([o4_x-bore/4 o4_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
 
-if crank_angle(i) >= combustion_start-360 && crank_angle(i) <= combustion_end-360
+if crank_angle(i) >= (combustion_start-360 + combustion_shift) && crank_angle(i) <= (combustion_end-360-combustion_shift)
     % Draw the rectangle only if the angle is between alpha and beta
-    rectangle('Position', [o1_x-bore/4, max(s_length0)+bore/4, bore/2, dclear], 'FaceColor', 'yellow', 'EdgeColor', 'yellow', 'LineWidth', 2);
+    rectangle('Position', [o1_x-bore/4, max(s_length0)+bore/4, bore/2, dclear], 'FaceColor', '#FF4500');
 end
 
-if crank_angle(i) >= combustion_start-180 && crank_angle(i) <= combustion_end-180
+if crank_angle(i) >= (combustion_start-180 + combustion_shift) && crank_angle(i) <= (combustion_end-180-combustion_shift)
     % Draw the rectangle only if the angle is between alpha and beta
-    rectangle('Position', [o3_x-bore/4, max(s_length0)+bore/4, bore/2, dclear], 'FaceColor', 'yellow', 'EdgeColor', 'yellow', 'LineWidth', 2);
+    rectangle('Position', [o3_x-bore/4, max(s_length0)+bore/4, bore/2, dclear], 'FaceColor', '#FF4500');
 end
 
-if crank_angle(i) >= combustion_start && crank_angle(i) <= combustion_end
+if crank_angle(i) >= (combustion_start + combustion_shift) && crank_angle(i) <= combustion_end-combustion_shift
     % Draw the rectangle only if the angle is between alpha and beta
-    rectangle('Position', [o4_x-bore/4, max(s_length_shifted)+bore/4, bore/2, dclear], 'FaceColor', 'yellow', 'EdgeColor', 'yellow', 'LineWidth', 2);
+    rectangle('Position', [o4_x-bore/4, max(s_length_shifted)+bore/4, bore/2, dclear], 'FaceColor', '#FF4500');
 end
 
-if crank_angle(i) >= combustion_start+180 && crank_angle(i) <= combustion_end+180
+if crank_angle(i) >= (combustion_start+combustion_shift+180) && crank_angle(i) <= combustion_end+180-combustion_shift
     % Draw the rectangle only if the angle is between alpha and beta
-    rectangle('Position', [o2_x-bore/4, max(s_length_shifted)+bore/4, bore/2, dclear], 'FaceColor', 'yellow', 'EdgeColor', 'yellow', 'LineWidth', 2);
+    rectangle('Position', [o2_x-bore/4, max(s_length_shifted)+bore/4, bore/2, dclear], 'FaceColor', '#FF4500');
 end
 
 % Set axis equal to maintain aspect ratio
