@@ -22,7 +22,7 @@ dclear = 400*vclear/(pi*(bore/100)^2);
 
 plot_width = (o4_x - o1_x);
 plot_offset = crank_length + 3;
-plot_length = crank_length + max(s_length0) + dclear;
+plot_length = max(s_length0) + bore/4 +  dclear;
 
 crank_angle_shifted= circshift(crank_angle, 180);
 s_length_shifted = circshift(s_length0, 180);
@@ -51,15 +51,21 @@ coupler_y3 = o3_y + s_length_shifted(i);
 coupler_y4 = o4_y + s_length0(i);
 
 % Plotting the lines with color attributes
-plot([o1_x crank_x1], [o1_y crank_y1], 'r', 'LineWidth', 1); % Crank 1 (red)
+plot([o1_x crank_x1], [o1_y crank_y1], 'b', 'LineWidth', 1); % Crank 1 (red)
 hold on;
-plot([crank_x1 coupler_x1], [crank_y1 coupler_y1], 'g', 'LineWidth', 1); % Coupler 1 (green)
-plot([o2_x crank_x2], [o2_y crank_y2], 'r', 'LineWidth', 1); % Crank 2 (red)
-plot([crank_x2 coupler_x2], [crank_y2 coupler_y2], 'g', 'LineWidth', 1); % Coupler 2 (green)
-plot([o3_x crank_x3], [o3_y crank_y3], 'r', 'LineWidth', 1); % Crank 3 (red)
-plot([crank_x3 coupler_x3], [crank_y3 coupler_y3], 'g', 'LineWidth', 1); % Coupler 3 (green)
-plot([o4_x crank_x4], [o4_y crank_y4], 'r', 'LineWidth', 1); % Crank 4 (red)
-plot([crank_x4 coupler_x4], [crank_y4 coupler_y4], 'g', 'LineWidth', 1); % Coupler 4 (green)
+
+scatter(crank_x1, crank_y1, 20, 'r', 'filled');
+scatter(crank_x1, crank_y1, 20, 'r', 'filled');
+scatter(crank_x1, crank_y1, 20, 'r', 'filled');
+scatter(crank_x1, crank_y1, 20, 'r', 'filled');
+
+plot([crank_x1 coupler_x1], [crank_y1 coupler_y1], 'b', 'LineWidth', 1); % Coupler 1 (green)
+plot([o2_x crank_x2], [o2_y crank_y2], 'b', 'LineWidth', 1); % Crank 2 (red)
+plot([crank_x2 coupler_x2], [crank_y2 coupler_y2], 'b', 'LineWidth', 1); % Coupler 2 (green)
+plot([o3_x crank_x3], [o3_y crank_y3], 'b', 'LineWidth', 1); % Crank 3 (red)
+plot([crank_x3 coupler_x3], [crank_y3 coupler_y3], 'b', 'LineWidth', 1); % Coupler 3 (green)
+plot([o4_x crank_x4], [o4_y crank_y4], 'b', 'LineWidth', 1); % Crank 4 (red)
+plot([crank_x4 coupler_x4], [crank_y4 coupler_y4], 'b', 'LineWidth', 1); % Coupler 4 (green)
 
 % Plotting vertical lines (for each mechanism)
 plot([o1_x-bore/4 o1_x-bore/4], [min(s_length0)-bore/4 max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
@@ -81,14 +87,13 @@ plot([o4_x-bore/4 o4_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bor
 
 % Set axis equal to maintain aspect ratio
 axis equal;
-axis([o1_x-max_offset min_width+max_offset o1_y-max_offset min_length+max_offset])
+axis([o1_x-plot_offset, plot_width+plot_offset, o1_y-plot_offset, plot_length+plot_offset])
  
 rectangle('Position', [coupler_x1-bore/4 coupler_y1-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x2-bore/4 coupler_y2-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x3-bore/4 coupler_y3-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x4-bore/4 coupler_y4-bore/4 bore/2 bore/2])
 
-% axis([-10 40 -10 30])
 pause(0.0001);
 hold off;
 end

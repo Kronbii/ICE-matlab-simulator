@@ -51,15 +51,32 @@ coupler_y3 = o3_y + s_length_shifted(i);
 coupler_y4 = o4_y + s_length0(i);
 
 % Plotting the lines with color attributes
-plot([o1_x crank_x1], [o1_y crank_y1], 'r', 'LineWidth', 1); % Crank 1 (red)
+plot([o1_x crank_x1], [o1_y crank_y1], 'b', 'LineWidth', 1); % Crank 1 (red)
 hold on;
-plot([crank_x1 coupler_x1], [crank_y1 coupler_y1], 'g', 'LineWidth', 1); % Coupler 1 (green)
-plot([o2_x crank_x2], [o2_y crank_y2], 'r', 'LineWidth', 1); % Crank 2 (red)
-plot([crank_x2 coupler_x2], [crank_y2 coupler_y2], 'g', 'LineWidth', 1); % Coupler 2 (green)
-plot([o3_x crank_x3], [o3_y crank_y3], 'r', 'LineWidth', 1); % Crank 3 (red)
-plot([crank_x3 coupler_x3], [crank_y3 coupler_y3], 'g', 'LineWidth', 1); % Coupler 3 (green)
-plot([o4_x crank_x4], [o4_y crank_y4], 'r', 'LineWidth', 1); % Crank 4 (red)
-plot([crank_x4 coupler_x4], [crank_y4 coupler_y4], 'g', 'LineWidth', 1); % Coupler 4 (green)
+
+% Plotting the joints
+plot(o1_x, o1_y, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+plot(o2_x, o2_y, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+plot(o3_x, o3_y, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+plot(o4_x, o4_y, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+
+plot(crank_x1, crank_y1, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+plot(crank_x2, crank_y2, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+plot(crank_x3, crank_y3, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+plot(crank_x4, crank_y4, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+
+plot(coupler_x1, coupler_y1, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+plot(coupler_x2, coupler_y2, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+plot(coupler_x3, coupler_y3, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+plot(coupler_x4, coupler_y4, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
+
+plot([crank_x1 coupler_x1], [crank_y1 coupler_y1], 'b', 'LineWidth', 1); % Coupler 1 (green)
+plot([o2_x crank_x2], [o2_y crank_y2], 'b', 'LineWidth', 1); % Crank 2 (red)
+plot([crank_x2 coupler_x2], [crank_y2 coupler_y2], 'b', 'LineWidth', 1); % Coupler 2 (green)
+plot([o3_x crank_x3], [o3_y crank_y3], 'b', 'LineWidth', 1); % Crank 3 (red)
+plot([crank_x3 coupler_x3], [crank_y3 coupler_y3], 'b', 'LineWidth', 1); % Coupler 3 (green)
+plot([o4_x crank_x4], [o4_y crank_y4], 'b', 'LineWidth', 1); % Crank 4 (red)
+plot([crank_x4 coupler_x4], [crank_y4 coupler_y4], 'b', 'LineWidth', 1); % Coupler 4 (green)
 
 % Plotting vertical lines (for each mechanism)
 plot([o1_x-bore/4 o1_x-bore/4], [min(s_length0)-bore/4 max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
