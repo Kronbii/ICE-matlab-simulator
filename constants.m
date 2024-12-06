@@ -1,12 +1,12 @@
  
 %% Link Lengths
 crank_angle = 1:720;            % Range of crank angles (degrees)
-crank_length = 46.5e-3;             % Length of the crank (cm)
-coupler_length = 148.8e-3;          % Length of the coupler (cm)
+crank_length = 46.5e-3;             % Length of the crank (m)
+coupler_length = 148.8e-3;          % Length of the coupler (m)
 
 %% Crankshaft Offsets
-r0 = 0;                         % Offset between crankshaft and piston centerlines (cm)
-r1 = -18e-3;                      % Offset between crankshaft and piston centerlines (cm)
+r0 = 0;                         % Offset between crankshaft and piston centerlines (m)
+r1 = -18e-3;                      % Offset between crankshaft and piston centerlines (m)
 
 %% Link Masses
 m2 = 0.81;
@@ -26,9 +26,9 @@ J3 = (1/12)*m3*coupler_length^2;
 %% Engine Parameters
 rc0 = 9.8;                    % Compression ratio
 rc1 = 10.1;                     % Compression ratio for offset
-L = 2 * crank_length;           % Total stroke length (cm)
+L = 2 * crank_length;           % Total stroke length (m)
 R = coupler_length / crank_length; % Ratio of coupler to driver length
-bore = 83e-3;                        % Bore radius
+bore = 83e-3;                        % Bore radius (m)
 g = 9.81;
 
 %% General Parameters
