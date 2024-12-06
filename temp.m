@@ -552,20 +552,20 @@ end
 
 
 
-% figure(1)
-% plot(V,P),xlabel('Volume (m3)'), ylabel('Pressure (Pa)'), title('PV Diagram')
-% figure(2)
-% plot(o2,P),xlabel('theta (degree)'), ylabel('Cylinder Pressure (Pa)'), title('P - theta Diagram')
-% figure(3)
-% plot(o2,avg_Torque_total), xlabel('theta (degree)'), ylabel('Torque (Nm)'), title('Flywheel Output Torque vs. Crank Angle')
-% figure(4)
-% hold on
-% plot(o2,Torque),xlabel('theta (degree)'), ylabel('Cylinder Torque (Nm)'), title('Cylinder Torque vs. Crank Angle')
-% plot(o2,avg_Torque)
-% figure(5)
-% hold on
-% plot(o2,Engine_torque),xlabel('theta (degree)'), ylabel('Total engine Torque (Nm)'), title('Engine Torque vs. Crank Angle')
-% plot(o2,avg_Torque_total)
-% figure(6)
-% plot(o2, V), xlabel('theta (degree)'), ylabel('Cylinder Volume (m3)'), title('Volume vs. Crank Angle')
-% 
+figure(1)
+plot(V,P),xlabel('Volume (m3)'), ylabel('Pressure (Pa)'), title('PV Diagram')
+figure(2)
+plot(o2,P),xlabel('theta (degree)'), ylabel('Cylinder Pressure (Pa)'), title('P - theta Diagram')
+figure(3)
+plot(o2,avg_Torque_total), xlabel('theta (degree)'), ylabel('Torque (Nm)'), title('Flywheel Output Torque vs. Crank Angle')
+figure(4)
+hold on
+plot(o2,Torque),xlabel('theta (degree)'), ylabel('Cylinder Torque (Nm)'), title('Cylinder Torque vs. Crank Angle')
+plot(o2,avg_Torque)
+figure(5)
+hold on
+plot(o2,Engine_torque),xlabel('theta (degree)'), ylabel('Total engine Torque (Nm)'), title('Engine Torque vs. Crank Angle')
+plot(o2,avg_Torque_total)
+figure(6)
+plot(o2, V), xlabel('theta (degree)'), ylabel('Cylinder Volume (m3)'), title('Volume vs. Crank Angle')
+

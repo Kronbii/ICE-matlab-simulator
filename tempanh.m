@@ -98,3 +98,5 @@ plot(crank_angle, a3y);
 title('a3y');
 xlabel('Crank Angle (degrees)');
 ylabel('a3y (m/s^2)');
+
+save('part3.mat')
