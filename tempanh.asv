@@ -1,41 +1,32 @@
-clc;
+
+load('part1.mat')
 load('part2.mat')
 
-T0 = zeros(1, length(crank_angle));
+Torque = zeros(1,length(crank_angle));
 
-for i=1:length(crank_angle)
-    % Define matrix A (coefficient matrix)
-    A = [
-        0, 0, 0, 0, 1, 0, 1, 0;
-        0, 0, 0, 0, 0, 1, 0, 0;
-        0, 0, 1, 0, -1, 0, 0, 0;
-        0, 0, 0, 1, 0, -1, 0, 0;
-        0, 0, AG3*cosd(coupler_angle0(i)), AG3*sind(coupler_angle0(i)), BG3*cosd(coupler_angle0(i)), BG3*sind(coupler_angle0(i)), 0, 0;
-        1, 0, -1, 0, 0, 0, 0, 0;
-        0, 1, 0, -1, 0, 0, 0, 0;
-        0, 0, crank_length*cosd(crank_angle(i)), crank_length*sind(crank_angle(i)), 0, 0, 0, 1;
-    ];
+for k= 1:length(crank_angle)
+A1=[0 0 0 0 1 0 1 0; 
+     0 0 0 0 0 1 0 0;
+     0 0 1 0 -1 0 0 0;
+     0 0 0 1 0 -1 0 0;
+     0 0 AG3*cosd(coupler_angle0(k)) AG3*sind(coupler_angle0(k)) BG3*cosd(coupler_angle0(k)) BG3*sind(coupler_angle0(k)) 0 0;
+     1 0 -1 0 0 0 0 0;
+     0 1 0 -1 0 0 0 0;
+     0 0 crank_length*cosd(crank_angle(k)) crank_length*sind(crank_angle(k)) 0 0 0 1];
 
-    % Define the right-hand side vector (b)
-    b = [ 
-        0;
-        m4 * a4y(i) + Fg(i) - F_atm + m4 * g;
-        m3 * a3x(i);
-        m3 * a3y(i) + m3 * g;
-        J3 * alpha3(i);
-        m2 * a2x(i);
-        m2 * a2y(i) + m2 * g;
-        -(m2 * g) * crank_length * sind(crank_angle(i))
-    ];
-
-    % Solve the matrix equation A * x = b using matrix division
-    x_values = A \ b;
-    
-    % Extract and display only T0 (the last unknown)
-    T0(i) = x_values(end);
+B1=[0;
+    m4*a4y(k)+Fg(k)-F_atm+m4*g;
+    m3*a3x(k);
+    m3*a3y(k)+m3*g;
+    J3*alpha3(k);
+    m2*a2x(k);
+    m2*a2y(k)+m2*g;
+    -(m2*g)*OG2*sind(crank_angle(k))];
+z = linsolve(A1,B1);
+Torque(k) = -z(8);
 end
 
-T0 = -T0;
+To = -T0;
 T1 = circshift(T0, 180);
 T2 = circshift(T0, 360);
 T3 = circshift(T0, 540);

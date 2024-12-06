@@ -3,6 +3,8 @@ load('part1.mat')
 load('part2.mat')
 
 Torque = zeros(1,length(crank_angle));
+a4y = -a4y;
+alpha3 = -alpha3;
 
 for k= 1:length(crank_angle)
 A1=[0 0 0 0 1 0 1 0; 
@@ -26,4 +28,73 @@ z = linsolve(A1,B1);
 Torque(k) = -z(8);
 end
 
-plot(crank_angle, Torque)
+T1 = circshift(Torque, 180);
+T2 = circshift(Torque, 360);
+T3 = circshift(Torque, 540);
+
+T_total = Torque + T1 + T2 + T3;
+
+% Plot the torque for a single cylinder and the total torque
+figure;
+hold on;
+plot(crank_angle, Torque, 'r');
+% plot(crank_angle, T1, 'r');
+% plot(crank_angle, T2, 'r');
+% plot(crank_angle, T3, 'r');
+xlabel('Crank Angle (degrees)');
+ylabel('Torque (N-m)');
+legend show;
+title('Torque Plot');
+grid on;
+
+figure;
+hold on;
+plot(crank_angle, T_total, 'r');
+xlabel('Crank Angle (degrees)');
+ylabel('Torque total (N-m)');
+legend show;
+title('Torque Plot');
+grid on;
+disp('doneee')
+
+% Plot coupler_angle0
+figure;
+plot(crank_angle, coupler_angle0);
+title('Coupler Angle0');
+xlabel('Crank Angle (degrees)');
+ylabel('Coupler Angle0');
+
+% Plot a4y
+figure;
+plot(crank_angle, a4y);
+title('a4y');
+xlabel('Crank Angle (degrees)');
+ylabel('a4y (m/s^2)');
+
+% Plot Fg
+figure;
+plot(crank_angle, Fg);
+title('Fg');
+xlabel('Crank Angle (degrees)');
+ylabel('Fg (N)');
+
+% Plot alpha3
+figure;
+plot(crank_angle, alpha3);
+title('Alpha3');
+xlabel('Crank Angle (degrees)');
+ylabel('Alpha3 (rad/s^2)');
+
+% Plot a3x
+figure;
+plot(crank_angle, a3x);
+title('a3x');
+xlabel('Crank Angle (degrees)');
+ylabel('a3x (m/s^2)');
+
+% Plot a3y
+figure;
+plot(crank_angle, a3y);
+title('a3y');
+xlabel('Crank Angle (degrees)');
+ylabel('a3y (m/s^2)');
