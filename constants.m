@@ -80,5 +80,8 @@ flywheel_cst = 0.01;
 flywheel_thickness = 50e-3;
 flywheel_density = 7800;
 
+nr = 2;
+air_density = 1.12;
+
 save('constants.mat')
 disp('done')

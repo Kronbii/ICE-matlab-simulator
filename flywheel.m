@@ -57,3 +57,5 @@ Is = energy/(flywheel_cst * w21^2);
 %% Calculating The Flywheel Radius
 flywheel_radius = ((2 * Is) / (pi * flywheel_thickness * flywheel_density))^(1/4);
 disp(['Radius: ', num2str(flywheel_radius)]);
+
+save('part4.mat')
