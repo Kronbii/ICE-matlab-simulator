@@ -1,5 +1,5 @@
 clear all; clc; 
-%% DEVELOPMENT
+%% STABLE
 %% Link Lengths
 crank_angle = 1:720;            % Range of crank angles (degrees)
 crank_length = 46.5e-3;             % Length of the crank (m)
