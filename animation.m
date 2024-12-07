@@ -12,11 +12,8 @@ bore = 100*bore;
 combustion_shift = combustion_shift - 5;
 
 o1_x = 0; o1_y = 0;
-
 o2_x = (2.2*crank_length); o2_y = 0;
-
 o3_x = 2*(2.2*crank_length); o3_y = 0;
-
 o4_x = 3*(2.2*crank_length); o4_y = 0;
 
 figure;
