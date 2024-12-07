@@ -460,7 +460,7 @@ x3 = find(abs(diff(sign(Torque - avg_Torque))) > 0);
 % Extract the x and y values at the points of intersection of Torque
 % and average torque
 x_intersect = theta(x3);
-y_intersect=avg_Torque(x_intersect-1);
+y_intersect= avg_Torque(x_intersect-1);
 
 % Display the intersection point(s)
 for i = 1:length(x3)

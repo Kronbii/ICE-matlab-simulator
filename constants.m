@@ -1,4 +1,5 @@
- %% DEVELOPMENT
+clear all; clc; 
+%% DEVELOPMENT
 %% Link Lengths
 crank_angle = 1:720;            % Range of crank angles (degrees)
 crank_length = 46.5e-3;             % Length of the crank (m)
@@ -75,4 +76,9 @@ error = inf;
 tolerence= 1e-2;
 counter = 0;
 
+flywheel_cst = 0.01;
+flywheel_thickness = 50e-3;
+flywheel_density = 7800;
+
 save('constants.mat')
+disp('done')

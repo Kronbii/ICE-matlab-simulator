@@ -42,12 +42,10 @@ T_avg1 = 14250;
 % disp(['Energy: ', num2str(energy)]);
 % plot(crank_angle(20:110), Titi(20:110))
 
-integ_range = 20:110;
-
-fun = @(x) 2200*sind(2*x) - 1800*cosd(2*x);
-energy = integral(fun, 20, 110);
-disp(['Integral: ', num2str(energy)]);
-
+integ_range = 20:0.:110;
+y = sin(x);
+integral_value = trapz(x, y);
+disp(['Integral: ', num2str(integral_value)]);
 
 
 %% Calculating Interia Using Energy
