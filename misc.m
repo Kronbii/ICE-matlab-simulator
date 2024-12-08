@@ -19,22 +19,20 @@ vol_efficiency = (max(mass)/(air_density*vdisp0)); % Volumetric efficiency
 piston_speed = 2*L*rpm/60; % piston speed in m/sec
 Engine_power = (power_ind*4)*(10^-3); % kW
 
-% Create a UI figure window
-fig = uifigure('Name', 'Engine Performance Parameters', 'Position', [100, 100, 500, 600]);
+fprintf('Engine Work per Cycle: %.4f J\n', engine_work);
+fprintf('Indicated Power: %.4f W\n', power_ind);
+fprintf('Mean Effective Pressure (MEP): %.4f kPa\n', MEP);
+fprintf('Friction Power: %.4f W\n', power_fr);
+fprintf('Mechanical Efficiency: %.4f\n', mech_efficiency);
+fprintf('Brake Power: %.4f W\n', power_brake);
+fprintf('Brake Mean Effective Pressure (BMEP): %.4f kPa\n', BMEP);
+fprintf('Thermodynamic Torque: %.4f Nm\n', thermo_torque);
+fprintf('Fuel Mass Flow Rate: %.4f kg/s\n', fuel_mf);
+fprintf('Fuel Conversion Efficiency: %.4f\n', fuel_conv_efficiency);
+fprintf('Specific Fuel Consumption (SFC): %.4f mg/J\n', SFC);
+fprintf('Volumetric Efficiency: %.4f\n', vol_efficiency);
+fprintf('Piston Speed: %.4f m/s\n', piston_speed);
+fprintf('Engine Power: %.4f kW\n', Engine_power);
 
-% Add labels to display the calculated values
-lbl_engine_work = uilabel(fig, 'Position', [20, 550, 460, 22], 'Text', ['Engine Work: ', num2str(engine_work), ' J/cycle']);
-lbl_power_ind = uilabel(fig, 'Position', [20, 510, 460, 22], 'Text', ['Indicated Power: ', num2str(power_ind), ' W']);
-lbl_MEP = uilabel(fig, 'Position', [20, 470, 460, 22], 'Text', ['Mean Effective Pressure (MEP): ', num2str(MEP), ' KPa']);
-lbl_power_fr = uilabel(fig, 'Position', [20, 430, 460, 22], 'Text', ['Friction Power: ', num2str(power_fr), ' W']);
-lbl_mech_efficiency = uilabel(fig, 'Position', [20, 390, 460, 22], 'Text', ['Mechanical Efficiency: ', num2str(mech_efficiency)]);
-lbl_power_brake = uilabel(fig, 'Position', [20, 350, 460, 22], 'Text', ['Brake Power: ', num2str(power_brake), ' W']);
-lbl_BMEP = uilabel(fig, 'Position', [20, 310, 460, 22], 'Text', ['Brake Mean Effective Pressure (BMEP): ', num2str(BMEP), ' KPa']);
-lbl_thermo_torque = uilabel(fig, 'Position', [20, 270, 460, 22], 'Text', ['Thermo Torque: ', num2str(thermo_torque), ' Nm']);
-lbl_fuel_mf = uilabel(fig, 'Position', [20, 230, 460, 22], 'Text', ['Fuel Mass Flow Rate: ', num2str(fuel_mf), ' kg/s']);
-lbl_fuel_conv_eff = uilabel(fig, 'Position', [20, 190, 460, 22], 'Text', ['Fuel Conversion Efficiency: ', num2str(fuel_conv_efficiency)]);
-lbl_SFC = uilabel(fig, 'Position', [20, 150, 460, 22], 'Text', ['Specific Fuel Consumption (SFC): ', num2str(SFC), ' mg/J']);
-lbl_vol_efficiency = uilabel(fig, 'Position', [20, 110, 460, 22], 'Text', ['Volumetric Efficiency: ', num2str(vol_efficiency)]);
-lbl_piston_speed = uilabel(fig, 'Position', [20, 70, 460, 22], 'Text', ['Piston Speed: ', num2str(piston_speed), ' m/s']);
-lbl_Engine_power = uilabel(fig, 'Position', [20, 30, 460, 22], 'Text', ['Engine Power: ', num2str(Engine_power), ' kW']);
+save('part5.mat')
 

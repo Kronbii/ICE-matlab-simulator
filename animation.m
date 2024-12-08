@@ -1,6 +1,6 @@
 clc;
 
-load('part2.mat')
+load('part5.mat')
 
 coupler_length = coupler_length *100;
 crank_length = crank_length * 100;

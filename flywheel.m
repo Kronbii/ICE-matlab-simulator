@@ -27,7 +27,7 @@ theta_int = theta_int(theta_int >= combustion_start & theta_int <= expansion_end
 
 %% Calculating the Energy using trapz
 %energy = trapz(crank_angle(min(theta_int):max(theta_int)), T0(min(theta_int):max(theta_int)) - T_avg);  % Integrate over theta_range and T_diff_range
-T_avg1 = 14250;
+% T_avg1 = 14250;
 % 
 % % Loop through crank angles with a step of 0.1
 % for i = 1:length(crank_angle)
@@ -42,17 +42,20 @@ T_avg1 = 14250;
 % disp(['Energy: ', num2str(energy)]);
 % plot(crank_angle(20:110), Titi(20:110))
 
-integ_range = 20:110;
+% integ_range = 20:110;
+% 
+% fun = @(x) 2200*sind(2*x) - 1800*cosd(2*x);
+% energy = integral(fun, 20, 110);
+% disp(['Integral: ', num2str(energy)]);
 
-fun = @(x) 2200*sind(2*x) - 1800*cosd(2*x);
-energy = integral(fun, 20, 110);
-disp(['Integral: ', num2str(energy)]);
+integ_range = min(theta_int):max(theta_int);
 
-
+energy = trapz(integ_range,T0(integ_range) - T_avg);
+disp(['Energy: ', num2str(energy)]);
 
 %% Calculating Interia Using Energy
-w21 = 150 * pi/30;
-Is = energy/(flywheel_cst * w21^2);
+% w21 = 150 * pi/30;
+Is = energy/(flywheel_cst * w2^2);
 
 %% Calculating The Flywheel Radius
 flywheel_radius = ((2 * Is) / (pi * flywheel_thickness * flywheel_density))^(1/4);

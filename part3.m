@@ -4,7 +4,6 @@ load('part2.mat')
 
 T0 = zeros(1,length(crank_angle));
 a4y = -a4y;
-alpha3 = -alpha3;
 
 for k= 1:length(crank_angle)
 A1=[0 0 0 0 1 0 1 0; 
@@ -57,46 +56,46 @@ title('Torque Plot');
 grid on;
 disp('doneee')
 
-% % Plot coupler_angle0
-% figure;
-% plot(crank_angle, coupler_angle0);
-% title('Coupler Angle0');
-% xlabel('Crank Angle (degrees)');
-% ylabel('Coupler Angle0');
-% 
-% % Plot a4y
-% figure;
-% plot(crank_angle, a4y);
-% title('a4y');
-% xlabel('Crank Angle (degrees)');
-% ylabel('a4y (m/s^2)');
-% 
-% % Plot Fg
-% figure;
-% plot(crank_angle, Fg);
-% title('Fg');
-% xlabel('Crank Angle (degrees)');
-% ylabel('Fg (N)');
-% 
-% % Plot alpha3
-% figure;
-% plot(crank_angle, alpha3);
-% title('Alpha3');
-% xlabel('Crank Angle (degrees)');
-% ylabel('Alpha3 (rad/s^2)');
-% 
-% % Plot a3x
-% figure;
-% plot(crank_angle, a3x);
-% title('a3x');
-% xlabel('Crank Angle (degrees)');
-% ylabel('a3x (m/s^2)');
-% 
-% % Plot a3y
-% figure;
-% plot(crank_angle, a3y);
-% title('a3y');
-% xlabel('Crank Angle (degrees)');
-% ylabel('a3y (m/s^2)');
+% Plot coupler_angle0
+figure;
+plot(crank_angle, coupler_angle0);
+title('Coupler Angle0');
+xlabel('Crank Angle (degrees)');
+ylabel('Coupler Angle0');
+
+% Plot a4y
+figure;
+plot(crank_angle, a4y);
+title('a4y');
+xlabel('Crank Angle (degrees)');
+ylabel('a4y (m/s^2)');
+
+% Plot Fg
+figure;
+plot(crank_angle, Fg);
+title('Fg');
+xlabel('Crank Angle (degrees)');
+ylabel('Fg (N)');
+
+% Plot alpha3
+figure;
+plot(crank_angle, alpha3);
+title('Alpha3');
+xlabel('Crank Angle (degrees)');
+ylabel('Alpha3 (rad/s^2)');
+
+% Plot a3x
+figure;
+plot(crank_angle, a3x);
+title('a3x');
+xlabel('Crank Angle (degrees)');
+ylabel('a3x (m/s^2)');
+
+% Plot a3y
+figure;
+plot(crank_angle, a3y);
+title('a3y');
+xlabel('Crank Angle (degrees)');
+ylabel('a3y (m/s^2)');
 
 save('part3.mat')
