@@ -1,4 +1,4 @@
-clear al; clc;
+clc;
 
 load('part5.mat')
 
@@ -27,6 +27,46 @@ plot_length = max(s_length0) + bore/4 +  dclear;
 
 crank_angle_shifted= circshift(crank_angle, 180);
 s_length_shifted = circshift(s_length0, 180);
+
+
+
+% Parameters for the cam
+load('part5.mat')
+r_base = 5;  % Base radius of the cam (without bump)
+r_bump = 1;  % Amplitude of the bump
+num_points = 100;  % Number of points for the cam profile
+
+% Define the cam profile with a bump
+bump_start = 45;  % Start of the bump (in radians)
+bump_end = 135;  % End of the bump (in radians)
+
+% Base circle
+r = r_base * ones(size(crank_angle));  % Start with a base circle
+
+% Add a bump (sine wave) to the cam profile
+bump = r_bump * sind(2* 180 * (crank_angle - bump_start) / (bump_end - bump_start));
+bump(crank_angle < bump_start | crank_angle > bump_end) = 0;  % No bump outside the bump range
+
+% Final cam profile (base circle + bump)
+r = r + bump;
+
+% Parametric equations for the cam profile
+x = r .* cosd(crank_angle);  % x coordinates of the cam profile
+y = r .* sind(crank_angle);  % y coordinates of the cam profile
+
+% Create line object (doesn't plot initially)
+h_cam = line(NaN, NaN, 'Color', 'b', 'LineWidth', 2);
+
+% Set up the axis
+axis equal;  % Equal scaling for both axes
+grid on;  % Turn on grid
+title('Rotating Cam Profile with a Bump');
+xlabel('X');
+ylabel('Y');
+
+% Precompute the cos and sin values for each frame
+cos_angles = cosd(crank_angle);  % Precompute cos for all frames
+sin_angles = sind(crank_angle);  % Precompute sin for all frames
 
 for i=1:length(crank_angle)
 set(gcf, 'Position', get(0, 'ScreenSize'));  % Maximizes the window to full screen
@@ -117,15 +157,19 @@ if crank_angle(i) >= (combustion_start+combustion_shift+180) && crank_angle(i) <
     rectangle('Position', [o2_x-bore/4, max(s_length_shifted)+bore/4, bore/2, dclear], 'FaceColor', '#FF4500');
 end
 
-% Set axis equal to maintain aspect ratio
-axis equal;
-axis([o1_x-plot_offset, plot_width+plot_offset, o1_y-plot_offset, plot_length+plot_offset])
  
 rectangle('Position', [coupler_x1-bore/4 coupler_y1-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x2-bore/4 coupler_y2-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x3-bore/4 coupler_y3-bore/4 bore/2 bore/2])
 rectangle('Position', [coupler_x4-bore/4 coupler_y4-bore/4 bore/2 bore/2])
 
+%% Cam design
+
+    % Use precomputed cosine and sine values to rotate the cam
+    rotated_coords = [cos_angles(i), -sin_angles(i); sin_angles(i), cos_angles(i)] * [x(i); y(i)];  % Apply the rotation to the coordinates
+    
+    % Update the plot data
+    set(h_cam, 'XData', rotated_coords(1, :), 'YData', rotated_coords(2, :));  % Update data all at once
 pause(0.000001);
 hold off;
 
