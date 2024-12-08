@@ -54,11 +54,45 @@ energy = trapz(integ_range,T0(integ_range) - T_avg);
 disp(['Energy: ', num2str(energy)]);
 
 %% Calculating Interia Using Energy
-% w21 = 150 * pi/30;
 Is = energy/(flywheel_cst * w2^2);
 
 %% Calculating The Flywheel Radius
 flywheel_radius = ((2 * Is) / (pi * flywheel_thickness * flywheel_density))^(1/4);
 disp(['Radius: ', num2str(flywheel_radius)]);
+disp(['Average Torque: ', num2str(T_avg)]);
+
+% Create a new figure window for the plot
+figure;
+
+% Plot the torque before adding the flywheel (T0) in red color
+plot(crank_angle, T0, 'r', 'LineWidth', 1);  % Red line for torque before flywheel
+hold on;  % Keep the current plot and add the next one
+
+% Plot the average torque (T_avg) in blue with circle markers
+plot(crank_angle, T_avg, '-ob', 'MarkerSize', 1, 'LineWidth', 1);  % Blue line with circle markers
+
+% Add a title to the plot to describe what is being displayed
+title('Torque Before and After Adding Flywheel', 'FontSize', 14);
+
+% Label the x-axis to indicate crank angle in degrees
+xlabel('Crank Angle (degrees)', 'FontSize', 12);
+
+% Label the y-axis to indicate torque in Newton-meters (Nm)
+ylabel('Torque (Nm)', 'FontSize', 12);
+
+% Add grid lines to the plot for better readability
+grid on;
+
+% Add a legend to differentiate between the torque before adding the flywheel and the average torque
+legend('Torque Before Flywheel', 'Torque With Flywheel', 'Location', 'Best');
+
+% Set axis limits to ensure both curves are fully visible
+axis([min(crank_angle) max(crank_angle) min([T0, T_avg]) max([T0, T_avg])]);
+
+% Optionally add a horizontal line at y=0 to visualize the baseline (zero torque level)
+yline(0, 'k--');  % Horizontal dashed line at y=0
+
+% Display the plot
+hold off;  % Release the current plot hold
 
 save('part4.mat')
