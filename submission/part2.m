@@ -127,7 +127,9 @@ T_avg_total = mean(T_total); %total for engine
 
 %% Calculating the crank angles at which the avg and instantaneous torque intersect
 theta_int = find(abs(diff(sign(T0 - T_avg))) > 0);
-theta_int = theta_int(theta_int >= combustion_start & theta_int <= expansion_end);
+disp(theta_int)
+theta_int = theta_int(theta_int >= combustion_start);
+disp(theta_int)
 
 %% Flywheel %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Calculating the Energy using trapz
@@ -174,9 +176,9 @@ fprintf('Specific Fuel Consumption (SFC): %.4f mg/J\n', SFC);
 fprintf('Volumetric Efficiency: %.4f\n', vol_efficiency);
 fprintf('Piston Speed: %.4f m/s\n', piston_speed);
 fprintf('Engine Power: %.4f kW\n\n', Engine_power);
-fprintf('Energy:\n', energy);
-fprintf('Radius:\n', flywheel_radius);
-fprintf('Average Torque:\n\n', T_avg);
+fprintf('Energy of flywheel: %.4f J\n', energy);
+fprintf('Flywheel Radius: %.4f m\n', flywheel_radius);
+fprintf('Average Torque: %.4f Nm\n\n', T_avg);
 
 %% Transmission %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 car_max_torque = max(T0);

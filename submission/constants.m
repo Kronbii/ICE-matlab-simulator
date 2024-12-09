@@ -10,7 +10,7 @@ r0 = 0;                         % Offset between crankshaft and piston centerlin
 r1 = -18e-3;                      % Offset between crankshaft and piston centerlines (m)
 
 %% Link Masses
-m2 = 0.81;
+m2 = 0.81; 
 m3 = 0.66;
 m4 = 0.71;
 
