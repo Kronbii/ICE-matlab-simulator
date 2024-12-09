@@ -204,7 +204,8 @@ iAmin = iAmin / iD;
 iAmax = iAmax / iD;
 
 %% Calculate phi1 and phi2 
-equations = @(phi) [(iAmin * (phi(1)^(gears_total - direct_drive)) * phi(2)^(0.5 * (gears_total - direct_drive) * (gears_total - direct_drive - 1))) - 1;
+equations = @(phi) [(iAmin * (phi(1)^(gears_total - direct_drive)) * phi(2)^(0.5 * (gears_total - direct_drive) * ...
+(gears_total - direct_drive - 1))) - 1;
                     (iAmin * (phi(1)^(gears_total - 1)) * phi(2)^(0.5 * (gears_total - 1) * (gears_total - 2))) - iAmax];
 
 
@@ -285,7 +286,7 @@ plot(crank_angle, w_fluc);
 yline(w2);
 xlabel('Crank Angle');
 ylabel('Amplitude');
-title('Sine Wave Centered Around w2');
+title('RPM fluctuation Centered Around w2');
 grid on;
 
 %% saving data
