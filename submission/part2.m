@@ -250,9 +250,6 @@ grid on;  % Add grid for better readability
 figure;
 hold on;
 plot(crank_angle, T0, 'r');
-% plot(crank_angle, T1, 'r');
-% plot(crank_angle, T2, 'r');
-% plot(crank_angle, T3, 'r');
 xlabel('Crank Angle (degrees)');
 ylabel('Torque (N-m)');
 legend show;
@@ -286,8 +283,7 @@ hold off;
 %% Plotting the sine wave
 figure;
 plot(crank_angle, w_fluc);
-hold on;
-plot(crank_angle, w2);
+yline(w2);
 xlabel('Crank Angle');
 ylabel('Amplitude');
 title('Sine Wave Centered Around w2');
