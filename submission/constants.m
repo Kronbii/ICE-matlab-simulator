@@ -83,12 +83,23 @@ flywheel_density = 7800;
 radius_dynamic = 0.38;
 rpm_max = 4000;
 
-nr = 2;
-air_density = 1.12;
 vel_max_car = 245;
 car_mass = 2600;
 friction_coef = 0.16;
-angle_incl = 
+incl_coef = 7/100;
+incl_angle = atan2d(incl_coef, 1);
+lambda = 1.3;
+car_acc = 4.55;
+total_efficiency = 0.9;
+car_max_torque = 450;
+iD = 3.636;
+direct_drive = 6;
+gears_total = 8;
+
+Pf = 0.2;
+
+nr = 2;
+air_density = 1.12;
 
 save('constants.mat')
 disp('done')
