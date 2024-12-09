@@ -37,6 +37,7 @@ while error > tolerence
         pressure(i) = (xb(i) * ((pressure(combustion_end) * vol(combustion_end)^yc) - ...
             (pressure(combustion_start) * vol(combustion_start)^yc)) + ...
             pressure(combustion_start) * vol(combustion_start)^yc) / (vol(i)^yc);
+        temp(i) = (pressure(i)*(vol(i)))/(R*mass(i));
     end
 
     %% Expansion Numerical Analysis
@@ -50,24 +51,22 @@ while error > tolerence
     
     pressure(exhaust_start) = pressure(expansion_end);
     temp(exhaust_start) = temp(expansion_end);
-    
-    %pressure(exhaust_start)= (((temp(expansion_end) * mi *R)/vol(exhaust_start))^(ye))*(1/(pressure(expansion_end)^(ye-1)));
-    %temp(exhaust_start)= (pressure(exhaust_start)*vol(exhaust_end)/(mi*R));
 
     for i = (exhaust_start + 1):exhaust_end
-      mass(i)=real(mass(i-1)-(dt*((Cd*At*pressure(i-1))/(sqrt((pressure(i-1)*vol(i-1))/mass(i-1))))*((Pe/pressure(i-1))^(1/ye))*((((2*ye)/(ye-1))*(1-(Pe/pressure(i-1))^((ye-1)/ye)))^0.5)));
+      mass(i)=real(mass(i-1)-(dt*((Cd*At*pressure(i-1))/(sqrt((pressure(i-1)*vol(i-1))/mass(i-1))))* ...
+      ((Pe/pressure(i-1))^(1/ye))*((((2*ye)/(ye-1))*(1-(Pe/pressure(i-1))^((ye-1)/ye)))^0.5)));
       pressure(i) = ((((temp(i-1))*(mass(i))*R)/(vol(i)))^ye) * (1/((pressure(i-1))^(ye-1)));
       temp(i) = (pressure(i)*(vol(i)))/(R*mass(i));
     end
 
     %% Intake Numerical Analysis
     mass(intake_start) = mass(exhaust_end);
-    
     pressure(intake_start) = pressure(exhaust_end);
     temp(intake_start) = temp(exhaust_end);
     
     for i = (intake_start + 1):intake_end    
-        mass(i)=real(mass(i-1)+(dt*((Cd*At*pressure(i-1))/(sqrt(R*Taf)))*((pressure(i-1)/Pi)^(1/yi))*((((2*yi)/(yi-1))*(1-(pressure(i-1)/Pi)^((yi-1)/yi))).^0.5)));
+        mass(i)=real(mass(i-1)+(dt*((Cd*At*pressure(i-1))/(sqrt(R*Taf)))*((pressure(i-1)/Pi)^(1/yi))* ...
+        ((((2*yi)/(yi-1))*(1-(pressure(i-1)/Pi)^((yi-1)/yi))).^0.5)));
         xr = mass(exhaust_end)/mass(i);
         temp(i) = xr*temp(exhaust_end) + ((1- xr))*Taf;
         pressure(i) = (mass(i)*R*temp(i))/vol(i);
@@ -85,11 +84,11 @@ end
 %% Force Calculation
 fprintf("Converged with error %.6f after %d iterations\n", error, counter);
 
+%% Torque %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Torque Calculation
 F_atm = p_atm * A_cyl;
 Fg = pressure * A_cyl;
 
-%% Torque %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Torque Calculation
 T0 = zeros(1,length(crank_angle));
 a4y = -a4y;
 
@@ -121,6 +120,7 @@ T3 = circshift(T0, 540);
 
 T_total = T0 + T1 + T2 + T3;
 
+%% Flywheel %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Calculating Mean Torque
 T_avg = mean(T0); %per cylinder
 T_avg_total = mean(T_total); %total for engine
@@ -133,7 +133,6 @@ theta_int = theta_int(theta_int >= combustion_start);
 disp('Intersection Angles (degrees):')
 disp(theta_int)
 
-%% Flywheel %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Calculating the Energy using trapz
 integ_range = min(theta_int):max(theta_int);
 integ_range_rad = integ_range * pi/180;
@@ -181,7 +180,7 @@ fprintf('Brake Mean Effective Pressure (BMEP): %.4f kPa\n', BMEP);
 fprintf('Thermodynamic Torque: %.4f Nm\n', thermo_torque);
 fprintf('Fuel Mass Flow Rate: %.4f kg/s\n', fuel_mf);
 fprintf('Fuel Conversion Efficiency: %.4f\n', fuel_conv_efficiency);
-fprintf('Specific Fuel Consumption (SFC): %.4f mg/J\n', SFC);
+fprintf('Specific Fuel Consumption (SFC): %.10f mg/J\n', SFC);
 fprintf('Volumetric Efficiency: %.4f\n', vol_efficiency);
 fprintf('Piston Speed: %.4f m/s\n', piston_speed);
 fprintf('Engine Power: %.4f kW\n\n', Engine_power);

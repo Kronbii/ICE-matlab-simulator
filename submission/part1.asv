@@ -127,6 +127,7 @@ ylabel('Displacement (cm)', 'FontWeight', 'bold');
 xlim([0 length(crank_angle)]); % Assuming crank_angle ranges from 0 to 360 degrees
 % Legend
 legend('Location', 'best', 'FontSize', 10);
+
 xline(90, 'k--', 'DisplayName', '90 degrees')
 xline(180, 'k--', 'DisplayName', '180 degrees')
 xline(270, 'k--', 'DisplayName', '270 degrees')
@@ -152,6 +153,16 @@ ylabel('Piston Volume (cc)', 'FontWeight', 'bold');
 xlim([0 length(crank_angle)]); % Assuming crank_angle ranges from 0 to 360 degrees
 % Legend
 legend('Location', 'best', 'FontSize', 10);
+% %calculate max values
+% [piston0_max, piston0_index] = max(total_volume0);
+% [piston1_max, piston1_index] = max(total_volume1);
+% plot(crank_angle(piston0_index), piston0_max, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Max 18mm (%.1f, %.2f)', crank_angle(piston0_index), piston0_max)); 
+% plot(crank_angle(piston1_index), piston1_max, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Max 36mm (%.1f, %.2f)', crank_angle(piston1_index), piston1_max));
+% %calculate minimum values
+% [piston0_min, piston0_index] = min(total_volume0);
+% [piston1_min, piston1_index] = min(total_volume1);
+% plot(crank_angle(piston0_index), piston0_min, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Min 18mm (%.1f, %.2f)', crank_angle(piston0_index), piston0_min)); 
+% plot(crank_angle(piston1_index), piston1_min, 'kx', 'MarkerSize', 8, 'DisplayName', sprintf('Min 36mm (%.1f, %.2f)', crank_angle(piston1_index), piston1_min));
 xline(90, 'k--', 'DisplayName', '90 degrees')
 xline(180, 'k--', 'DisplayName', '180 degrees')
 xline(270, 'k--', 'DisplayName', '270 degrees')
