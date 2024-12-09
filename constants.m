@@ -10,14 +10,14 @@ r0 = 0;                         % Offset between crankshaft and piston centerlin
 r1 = -18e-3;                      % Offset between crankshaft and piston centerlines (m)
 
 %% Link Masses
-m2 = 0.81;
+m2 = 0.81; 
 m3 = 0.66;
 m4 = 0.71;
 
 %% Links Parameters
 ground_angle = 0;               % Angle of the ground (degrees)
 rpm = 2000;
-w2 = rpm * pi/30;              % Angular velocity of the crank (ms^-1)
+w2 = rpm * pi/30;              % Angular velocity of the crank (rads^-1)
 alpha2 = 0;                     % Initial angular acceleration (ms^-2)
 OG2 = crank_length/10;
 AG3 = coupler_length/3;
@@ -76,7 +76,7 @@ error = inf;
 tolerence= 1e-2;
 counter = 0;
 
-flywheel_cst = 0.01;
+flywheel_cst = 0.04;
 flywheel_thickness = 50e-3;
 flywheel_density = 7800;
 
@@ -95,6 +95,8 @@ car_max_torque = 450;
 iD = 3.636;
 direct_drive = 6;
 gears_total = 8;
+
+Pf = 0.2;
 
 nr = 2;
 air_density = 1.12;
