@@ -147,17 +147,11 @@ Is = energy/(flywheel_cst * w2^2);
 flywheel_radius = ((2 * Is) / (pi * flywheel_thickness * flywheel_density))^(1/4);
 
 %% Calculating minimum and maximum rotational speed
-syms w_min w_max
-eqn1 = (w_max - w_min)/w2 == flywheel_cst;
-eqn2 = (w_max + w_min)/2 == w2;
-sol = solve([eqn1, eqn2], [w_min, w_max]);
-fprintf('W_min: %.4f rads^-1\n', sol.w_min);
-fprintf('W_max: %.4f rads^-1\n\n', sol.w_max);
+w_max = (w2/2) * (flywheel_cst+2);
+w_min = w2*(2-(flywheel_cst+2)/2);
 
 % Generate the sine wave
-w_min_val = double(subs(w_min));
-w_max_val = double(subs(w_max));
-w_fluc = ((w_max_val - w_min_val)/2) * sind(crank_angle) + w2;
+w_fluc = ((w_max - w_min)/2) * sind(crank_angle) + w2;
 
 %% Perfomance %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Calculating Performance Characteristics
@@ -292,10 +286,12 @@ hold off;
 %% Plotting the sine wave
 figure;
 plot(crank_angle, w_fluc);
+hold on;
+plot(crank_angle, w2);
 xlabel('Crank Angle');
 ylabel('Amplitude');
 title('Sine Wave Centered Around w2');
-grid on;ylim([w_min - 1, w_max + 1]); % Set y-axis limits for better visibility
+grid on;
 
 %% saving data
 save('part2.mat')
