@@ -280,7 +280,7 @@ yline(0, 'k--');
 hold off;
 
 
-%% Plotting the sine wave
+%% Plotting the RPM wave
 figure;
 plot(crank_angle, w_fluc);
 yline(w2);
