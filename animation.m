@@ -17,7 +17,6 @@ o3_x = 2*(2.2*crank_length); o3_y = 0;
 o4_x = 3*(2.2*crank_length); o4_y = 0;
 
 figure;
-
 vclear= vdisp0/(rc0 -1);
 dclear = 400*vclear/(pi*(bore/100)^2);
 

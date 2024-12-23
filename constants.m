@@ -18,7 +18,7 @@ m4 = 0.71;
 ground_angle = 0;               % Angle of the ground (degrees)
 rpm = 2000;
 w2 = rpm * pi/30;              % Angular velocity of the crank (rads^-1)
-alpha2 = 0;                     % Initial angular acceleration (ms^-2)
+alpha2 = 0;                     % Initial angular acceleration (rads^-2)
 OG2 = crank_length/10;
 AG3 = coupler_length/3;
 BG3 = 2*AG3;
@@ -76,13 +76,14 @@ error = inf;
 tolerence= 1e-2;
 counter = 0;
 
+%% Flywheel constants
 flywheel_cst = 0.04;
 flywheel_thickness = 50e-3;
 flywheel_density = 7800;
 
+%% Transmission constants
 radius_dynamic = 0.38;
 rpm_max = 4000;
-
 vel_max_car = 245;
 car_mass = 2600;
 friction_coef = 0.16;
@@ -96,10 +97,10 @@ iD = 3.636;
 direct_drive = 6;
 gears_total = 8;
 
-Pf = 0.2;
-
+%% Performance constants
+Pf = 0.1;
 nr = 2;
-air_density = 1.12;
+air_density = 1.28;
 
 save('constants.mat')
 disp('done')
