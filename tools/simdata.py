@@ -85,29 +85,26 @@ def cylinder(arr, k, theta):
     return at(arr, np.asarray(theta) - OFFSET[k])
 
 
-def burned_fraction(d, phi):
-    """Wiebe burned fraction at a cylinder's own crank angle, as part2.m defines it."""
-    a0, a1 = float(d['combustion_start']), float(d['combustion_end'])
-    x = (phi % 720 - a0) / (a1 - a0)
-    if x <= 0:
-        return 0.0
-    if x >= 1:
-        return 1.0
-    return 1 - np.exp(-float(d['a']) * x ** (float(d['m']) + 1))
-
-
 def summary(d):
-    """The headline figures the scripts print, rounded for display."""
-    p_atm = float(d['p_atm'])
+    """The headline figures part2.m prints, for display."""
     return {
         'power_kw': float(d['Engine_power']),
-        'mean_torque': float(d['T_avg_total']),
-        'efficiency': float(d['fuel_conv_efficiency']),
+        'torque': float(d['torque_brake']),
+        'efficiency': float(d['brake_efficiency']),
+        'indicated_efficiency': float(d['fuel_conv_efficiency']),
         'work': float(d['engine_work']),
-        'peak_pressure_atm': float(np.max(d['pressure']) / p_atm),
+        'peak_pressure_bar': float(np.max(d['pressure']) / 1e5),
+        'imep_bar': float(d['IMEP_n'] / 1e5),
+        'bmep_bar': float(d['BMEP'] / 1e5),
+        'bsfc': float(d['BSFC']),
+        'eta_v': float(d['vol_efficiency']),
         'flywheel_cm': float(d['flywheel_radius']) * 100,
         'flywheel_energy': float(d['energy']),
         'gears': [float(g) for g in np.atleast_1d(d['iA'])],
         'rpm': float(d['rpm']),
-        'iterations': int(d['counter']),
+        'iterations': int(d['cycle_count']),
+        'torque_peak': float(d['torque_peak']),
+        'rpm_torque_peak': float(d['rpm_torque_peak']),
+        'power_peak_kw': float(d['power_peak']) / 1e3,
+        'rpm_power_peak': float(d['rpm_power_peak']),
     }

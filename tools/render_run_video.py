@@ -22,9 +22,9 @@ from simdata import DARK, MEDIA, ROOT, load, summary
 
 W, H, FPS = 1920, 1080, 30
 TH = DARK
-INTRO, DRAW, HOLD, OUTRO = 2.6, 1.4, 2.0, 5.5
+INTRO, DRAW, HOLD, OUTRO = 2.6, 1.3, 1.8, 6.0
 CONSOLE_LINES = 36
-CONSOLE_WIDTH = 54   # characters that fit the Command Window
+CONSOLE_WIDTH = 55   # characters that fit the Command Window
 SCRIPTS = ('constants', 'part1', 'part2')
 
 
@@ -34,7 +34,8 @@ def parse(log):
     for line in Path(log).read_text().splitlines():
         if line.startswith('>> '):
             cur = (line[3:].strip(), [])
-            runs.append(cur)
+            if cur[0] in SCRIPTS:           # the animation has its own video
+                runs.append(cur)
         elif cur is not None:
             cur[1].extend(wrap(line.rstrip()))
     while runs and runs[-1][1] and not runs[-1][1][-1]:
@@ -43,22 +44,21 @@ def parse(log):
 
 
 def wrap(line):
-    """A line too wide for the Command Window, broken at spaces as a narrow terminal would."""
-    if len(line) <= CONSOLE_WIDTH:
-        return [line]
-    indent = line[:len(line) - len(line.lstrip())]
-    out, cur = [], indent
-    for word in line.split():
-        if len(cur) + len(word) + 3 > CONSOLE_WIDTH and cur.strip():
-            out.append(cur.rstrip())
-            cur = indent
-        cur += word + '   '
-    out.append(cur.rstrip())
+    """A line too wide for the Command Window, broken at a space as a narrow terminal would."""
+    out = []
+    while len(line) > CONSOLE_WIDTH:
+        cut = line.rfind(' ', 0, CONSOLE_WIDTH)
+        if cut <= len(line) - len(line.lstrip()):
+            break
+        out.append(line[:cut].rstrip())
+        line = '  ' + line[cut:].lstrip()
+    out.append(line)
     return out
 
 
 def schedule(runs):
-    """Times for every console line, every figure and the closing card."""
+    """Times for every console line, every figure and the closing card, in the order a
+    script prints its lines, opens its figures and says it is done."""
     lines, typing, figs = [], [], []
     by_script = {}
     for i, (_, _, script, _) in enumerate(FIGURES):
@@ -70,19 +70,19 @@ def schedule(runs):
         t += dur
         lines.append((t, f'>> {script}'))
         t += 0.35
-        if script == 'part2':
-            for line in out:
-                lines.append((t, line))
-                t += 0.24 if line.startswith('Iteration') else 0.05 if not line else 0.11
+        body, tail = (out[:-1], out[-1:]) if out and out[-1] == 'done' else (out, [])
+        for line in body:
+            lines.append((t, line))
+            sweep_row = line[:6].strip().isdigit()
+            t += 0.32 if sweep_row else 0.05 if not line else 0.13
+        if body:
             t += 0.5
         for i in by_script.get(script, []):
             figs.append((t, i))
             t += DRAW + HOLD
-        if script != 'part2':
-            for line in out:
-                lines.append((t, line))
-                t += 0.3
-            t += 0.3
+        for line in tail:
+            lines.append((t, line))
+            t += 0.4
     return lines, typing, figs, t, t + OUTRO
 
 
@@ -94,12 +94,13 @@ def ease(x):
 def line_color(text):
     if text.startswith('>>'):
         return TH['text']
-    if text.startswith('Iteration'):
-        return TH['muted']
-    if text.startswith('Converged') or text == 'done':
+    if text.startswith(('Kinematics check', 'Cycle converged', 'Torque check')) or text == 'done':
         return TH['line3']
-    if text.startswith(('Engine Power', 'Gear Ratios', 'Flywheel Radius', 'Engine Work')):
+    if text.startswith(('Brake torque', 'Indicated power', 'Peak torque', 'Gear ratios',
+                        'Compression ratio', 'Net work')):
         return TH['line']
+    if text[:6].strip().isdigit() or text.lstrip().startswith('rpm'):
+        return TH['text']
     return '#c9d1d9'
 
 
@@ -119,8 +120,8 @@ def render(d, runs, path, only=None):
     # top bar
     fig.text(0.017, 0.958, 'ICE-matlab-simulator', fontsize=22, fontweight='bold',
              color=TH['text'], va='center')
-    fig.text(0.017, 0.925, 'A run of the MATLAB scripts in GNU Octave, unchanged: every '
-             'line it printed and every figure it drew', fontsize=14, color=TH['muted'],
+    fig.text(0.017, 0.925, 'The MATLAB scripts run in GNU Octave: every line they print and '
+             'every figure they draw', fontsize=14, color=TH['muted'],
              va='center')
     chips = {}
     for j, name in enumerate(SCRIPTS):
@@ -140,9 +141,11 @@ def render(d, runs, path, only=None):
     # figure window
     panel(fig, (0.362, 0.035, 0.621, 0.855), '')
     fig_title = fig.text(0.374, 0.86, '', fontsize=15, color=TH['muted'], va='center')
-    dots = [fig.text(0.80 + k * 0.017, 0.86, '●', fontsize=13, color='#30363d', ha='center',
-                     va='center', family='DejaVu Sans') for k in range(len(FIGURES))]
+    nf = len(FIGURES)
+    dots = [fig.text(0.968 - (nf - 1 - k) * 0.0135, 0.86, '●', fontsize=11, color='#30363d',
+                     ha='center', va='center', family='DejaVu Sans') for k in range(nf)]
     ax = fig.add_axes([0.41, 0.1, 0.55, 0.69])
+    own_axes = list(fig.axes)
     veil = fig.add_artist(Rectangle((0.364, 0.037), 0.617, 0.81, transform=fig.transFigure,
                                     fc=TH['panel'], ec='none', alpha=0, zorder=5))
     waiting = fig.text(0.672, 0.44, '', fontsize=17, color=TH['muted'], ha='center',
@@ -150,11 +153,11 @@ def render(d, runs, path, only=None):
 
     # closing card, laid over the figure window
     card = []
-    big = [(f"{s['power_kw']:.1f} kW", 'indicated engine power'),
-           (f"{s['mean_torque']:.0f} N·m", 'mean torque, four cylinders'),
-           (f"{100 * s['efficiency']:.0f}%", 'fuel conversion efficiency'),
-           (f"{s['work']:.0f} J", 'work per cylinder per cycle'),
-           (f"{s['peak_pressure_atm']:.1f} atm", 'peak cylinder pressure'),
+    big = [(f"{s['torque_peak']:.0f} N·m", f"peak brake torque, {s['rpm_torque_peak']:.0f} rpm"),
+           (f"{s['power_peak_kw']:.1f} kW", f"peak brake power, {s['rpm_power_peak']:.0f} rpm"),
+           (f"{100 * s['efficiency']:.0f}%", f"brake efficiency at {s['rpm']:.0f} rpm"),
+           (f"{s['peak_pressure_bar']:.0f} bar", 'peak cylinder pressure'),
+           (f"{100 * s['eta_v']:.0f}%", 'volumetric efficiency'),
            (f"{s['flywheel_cm']:.1f} cm", 'flywheel radius, steel disc 50 mm')]
     card.append(fig.text(0.39, 0.78, 'What the run found', fontsize=30, fontweight='bold',
                          color=TH['text'], va='center', zorder=7))
@@ -169,9 +172,9 @@ def render(d, runs, path, only=None):
                          va='center', zorder=7))
     card.append(fig.text(0.39, 0.15, gears, fontsize=24, color=TH['text'], va='center',
                          family='IBM Plex Mono', zorder=7))
-    card.append(fig.text(0.39, 0.085, f"{s['rpm']:.0f} rpm  ·  cycle converged after "
-                         f"{s['iterations']} iterations", fontsize=14, color=TH['muted'],
-                         va='center', zorder=7))
+    card.append(fig.text(0.39, 0.085, f"2.0 L, compression ratio 9.8  ·  {s['bsfc']:.0f} g/kWh "
+                         f"at {s['rpm']:.0f} rpm  ·  cycle periodic after {s['iterations']} "
+                         f"cycles", fontsize=14, color=TH['muted'], va='center', zorder=7))
     for a in card:
         a.set_alpha(0)
 
@@ -209,6 +212,8 @@ def render(d, runs, path, only=None):
         for k, (t0, i) in enumerate(figs):
             if t0 <= t:
                 cur = (k, t0, i)
+        for extra in [a for a in fig.axes if a not in own_axes]:
+            extra.remove()       # a figure's twin axis from the previous frame
         ax.clear()
         ax.set_facecolor(TH['panel'])
         if cur is None:
@@ -224,9 +229,9 @@ def render(d, runs, path, only=None):
             for j, c in enumerate(dots):
                 c.set_color(TH['line'] if j == k else TH['muted'] if j < k else '#30363d')
             fade = max(0.0, 1 - (t - t0) / 0.3)
-            computing = (running == 'part2' and i < 3 and t > t0 + DRAW + HOLD)
+            computing = (running == 'part2' and script == 'part1.m' and t > t0 + DRAW + HOLD)
             veil.set_alpha(max(fade, 0.72 if computing else 0))
-            waiting.set_text('part2.m is solving the cycle…' if computing else '')
+            waiting.set_text('part2.m is running the cycle and the speed sweep…' if computing else '')
         # closing card
         c = ease((t - t_card) / 0.6)
         for a in card:
@@ -246,7 +251,7 @@ def render(d, runs, path, only=None):
                  color=TH['text'], ha='center', va='center', zorder=21),
         fig.text(0.5, 0.47, 'constants.m  →  part1.m  →  part2.m', fontsize=24,
                  color=TH['line'], ha='center', va='center', family='IBM Plex Mono', zorder=21),
-        fig.text(0.5, 0.40, 'Four-cylinder spark-ignition engine at 2000 rpm  ·  GNU Octave',
+        fig.text(0.5, 0.40, '2.0 L four-cylinder spark-ignition engine  ·  GNU Octave',
                  fontsize=18, color=TH['muted'], ha='center', va='center', zorder=21),
     ]
 

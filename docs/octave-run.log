@@ -1,42 +1,46 @@
 >> constants
 done
 >> part1
+Kinematics check against numerical derivatives (max relative error):
+  piston velocity 7.0e-05, piston acceleration 8.3e-05, rod angular acceleration 6.7e-05
+Stroke 93.0 mm, swept volume 503.2 cc per cylinder, 2.01 L engine
+Compression ratio 9.80 (offset cylinder 10.10)
 done
 >> part2
-Iteration: 1, Error: 43.387934, Temp: 343.39
-Iteration: 2, Error: 1.538059, Temp: 344.93
-Iteration: 3, Error: 0.044090, Temp: 344.97
-Iteration: 4, Error: 0.088050, Temp: 345.06
-Iteration: 5, Error: 0.040864, Temp: 345.02
-Iteration: 6, Error: 0.005467, Temp: 345.01
-Converged with error 0.005467 after 6 iterations
-Intersection Angles (degrees):
-   222   248   362   478   581   617
-Intersection Angles (degrees):
-   362   478   581   617
-Engine Work per Cycle: 459.3280 J
-Indicated Power: 7655.4671 W
-Mean Effective Pressure (MEP): 434.6850 kPa
-Friction Power: 765.5467 W
-Mechanical Efficiency: 0.9000
-Brake Power: 6889.9204 W
-Brake Mean Effective Pressure (BMEP): 391.2165 kPa
-Thermodynamic Torque: 32.9136 Nm
-Fuel Mass Flow Rate: 0.0006 kg/s
-Fuel Conversion Efficiency: 0.2822
-Specific Fuel Consumption (SFC): 0.0000000815 mg/J
-Volumetric Efficiency: 0.4716
-Piston Speed: 6.2000 m/s
-Engine Power: 30.6219 kW
+Cycle converged after 4 cycles (state change 9.2e-06)
+Peak pressure 59.3 bar at 9 degrees after TDC, peak temperature 2373 K
+Residual gas fraction 5.4%, exhaust temperature 1117 K
+Torque check: mean crank torque 159.60 N m, P-V loop work x 4 cylinders / 4 pi = 159.59 N m
 
-Energy of flywheel: 369.1233 J
-Flywheel Radius: 0.1361 m
-Average Torque: 36.5551 Nm
+Performance at 2000 rpm (whole engine unless noted)
+Net work per cylinder per cycle: 501.4 J
+IMEP gross 10.15 bar, net 9.96 bar, pumping 0.19 bar
+FMEP 1.47 bar, BMEP 8.49 bar
+Indicated power 33.4 kW, brake power 28.5 kW
+Brake torque 136.0 N m, mechanical efficiency 85.2%
+Fuel conversion efficiency: indicated 34.2%, brake 28.6%
+Heat to the walls: 18.9% of the fuel energy released
+BSFC 289 g/kWh, fuel flow 2.29 g/s
+Volumetric efficiency 85.3%, mean piston speed 6.2 m/s
+Flywheel: energy swing 133.7 J, inertia 0.0762 kg m^2, radius 10.6 cm (speed swing 4.0%)
 
-phi1 = 1.2263
-phi2 = 1.0337
-iAmin = 0.64326
-iAmax = 5.386
-Gear Ratios (iA):
-   5.3860   3.5991   2.4861   1.7753   1.3105   1.0000   0.7888   0.6433
+  rpm   torque   power   BMEP   vol.eff  BSFC
+ 1000   133.9    14.0   8.36    87.4%   301
+ 1500   137.6    21.6   8.59    86.5%   290
+ 2000   136.0    28.5   8.49    85.3%   289
+ 2500   131.7    34.5   8.22    83.9%   294
+ 3000   125.5    39.4   7.84    82.2%   302
+ 3500   117.6    43.1   7.34    80.2%   315
+ 4000   107.6    45.1   6.72    77.6%   333
+ 4500    95.5    45.0   5.96    74.2%   359
+ 5000    81.5    42.7   5.09    70.1%   397
+ 5500    66.6    38.4   4.16    65.7%   455
+ 6000    51.5    32.3   3.21    61.3%   550
+Peak torque 137.6 N m at 1500 rpm, peak power 45.1 kW at 4000 rpm
+
+Gearbox for a 2600 kg vehicle and a 450 N m engine: phi1 = 1.2257, phi2 = 1.0348
+Gear ratios: 5.48 3.64 2.50 1.78 1.31 1.00 0.79 0.64 
+Speed at 4000 rpm (km/h): 29 43 63 88 120 158 200 245 
+done
+>> animation
 

@@ -3,8 +3,8 @@
     python3 tools/render_engine_video.py [path/to/part2.mat]
 
 Everything that moves comes from part2.mat: piston travel from s_length0, the gas column
-from total_volume0, its colour from temp, the flame from the Wiebe burn of part2.m, the
-valves from the phase timing in constants.m, and the charts from pressure, vol and T0..T3.
+from total_volume0, its colour from temp, the flame from the burned fraction xb, the valves
+from the modelled lift_in and lift_ex, and the charts from pressure, vol and T0.
 Writes docs/media/engine-simulation.mp4 (1080p60, three seamless cycles), a one-cycle GIF
 for the README and a poster frame.
 """
@@ -20,8 +20,8 @@ import numpy as np
 from matplotlib.colors import LinearSegmentedColormap, to_rgb
 from matplotlib.patches import Circle, Polygon, Rectangle, Wedge
 
-from simdata import (CYLINDER_COLOR, DARK, FIRING_ORDER, MEDIA, OFFSET, at, burned_fraction,
-                     cylinder, load, phase_at, summary)
+from simdata import (CYLINDER_COLOR, DARK, FIRING_ORDER, MEDIA, OFFSET, at, cylinder, load,
+                     phase_at, summary)
 
 W, H, FPS = 1920, 1080, 60
 STEP = 1.5            # crank degrees per frame
@@ -32,22 +32,26 @@ TH = DARK
 GAS = LinearSegmentedColormap.from_list('gas', [
     (0.00, '#1e3a5f'), (0.12, '#2f4d7d'), (0.28, '#7a3a63'),
     (0.50, '#d1452b'), (0.75, '#ff8c2a'), (1.00, '#ffe7a3')])
-T_LO, T_HI = 300.0, 2850.0
+T_LO, T_HI = 300.0, 2450.0
 PHASE_LABEL = {'intake': 'intake', 'compression': 'compression', 'combustion': 'combustion',
                'expansion': 'expansion', 'exhaust': 'exhaust'}
 STEEL, STEEL_DARK, STEEL_EDGE = '#a7b0bd', '#6b7480', '#3d444f'
-LIFT = 11.0          # mm, drawn valve lift
 PORT = '#141920'
 
 
 def valve_lift(d, phi, kind):
-    """Lift in mm: a smooth bump over the window the cycle keeps that valve open."""
+    """Valve lift in mm at a cylinder's own crank angle, as part2.m modelled it."""
+    return 1e3 * float(at(d['lift_in' if kind == 'in' else 'lift_ex'], phi))
+
+
+def burned(d, phi):
+    """Burned fraction of the charge at a cylinder's own crank angle (0 before the spark)."""
     x = phi % 720
-    a, b = ((float(d['intake_start']) - 1, float(d['intake_end'])) if kind == 'in'
-            else (float(d['exhaust_start']), float(d['exhaust_end'])))
-    if not a <= x <= b:
+    if x < float(d['combustion_start']):
         return 0.0
-    return LIFT * np.sin(np.pi * (x - a) / (b - a)) ** 2
+    if x >= float(d['exhaust_start']):
+        return 1.0
+    return float(at(d['xb'], x))
 
 
 class Engine:
@@ -162,14 +166,14 @@ class Engine:
             phi = theta - OFFSET[k]
             xc = c['xc']
             s = float(at(d['s_length0'], phi)) * 1000
-            ax_, ay_ = xc + self.r * np.sin(np.radians(phi)), self.r * np.cos(np.radians(phi))
+            ax_, ay_ = xc - self.r * np.sin(np.radians(phi)), self.r * np.cos(np.radians(phi))
             crown = s + self.pin_to_crown
             # gas and flame
             temp = float(at(d['temp'], phi))
             c['gas'].set_y(crown)
             c['gas'].set_height(self.deck - crown)
             c['gas'].set_facecolor(GAS(np.clip((temp - T_LO) / (T_HI - T_LO), 0, 1)))
-            xb = burned_fraction(d, phi)
+            xb = burned(d, phi)
             burning = 0 < xb < 1
             c['flame'].set_radius(6 + 78 * np.sqrt(xb))
             c['flame'].set_alpha(0.75 * (1 - xb ** 2) if burning else 0)
@@ -196,13 +200,13 @@ class Engine:
                 yb = self.deck - lift
                 face.set_xy([(xv - 14, yb), (xv + 14, yb), (xv + 4, yb + 6), (xv - 4, yb + 6)])
                 stem.set_data([xv, xv], [yb + 5, self.deck + self.head_h - 4])
-                port.set_facecolor(_mix(PORT, tint, 0.75 * lift / LIFT))
+                port.set_facecolor(_mix(PORT, tint, 0.75 * lift / (1e3 * float(d['lift_max']))))
                 flow.set_visible(lift > 0.8)
                 flow.arrow_patch.set_alpha(min(1, lift / 6))
             name = phase_at(d, phi)
             c['phase'].set_text(PHASE_LABEL[name])
             c['phase'].set_color(TH['phase'][name])
-            c['p'].set_text(f"{float(at(d['pressure'], phi)) / float(d['p_atm']):5.1f} atm")
+            c['p'].set_text(f"{float(at(d['pressure'], phi)) / 1e5:5.1f} bar")
 
 
 def _mix(a, b, t):
@@ -238,13 +242,13 @@ def _chart(fig, rect, title):
 class Charts:
     def __init__(self, fig, d):
         self.d = d
-        p_atm = float(d['p_atm'])
+        p_atm = 1e5               # charts in bar
         grid = np.arange(0, 721, 1.0)
         self.p_atm = p_atm
         x0, w = 0.595, 0.375
 
         # pressure in each cylinder against engine crank angle
-        ax = _chart(fig, [x0, 0.645, w, 0.185], 'Cylinder pressure  (atm)')
+        ax = _chart(fig, [x0, 0.645, w, 0.185], 'Cylinder pressure  (bar)')
         self.p_curves = {}
         for k in (1, 2, 3, 4):
             ax.plot(grid, cylinder(d['pressure'], k, grid) / p_atm, color=CYLINDER_COLOR[k],
@@ -284,12 +288,13 @@ class Charts:
         ax.plot(grid, self.total, color=TH['text'], lw=2.4)
         mean = float(d['T_avg_total'])
         ax.axhline(mean, color=TH['line'], lw=1.6, ls='--')
-        ax.text(0.995, 1.04, f'- - mean {mean:.0f} N·m', transform=ax.transAxes, ha='right',
+        ax.text(0.995, 1.04, f'- - mean {mean:.0f} N·m, indicated', transform=ax.transAxes, ha='right',
                 va='bottom', fontsize=12, color=TH['line'])
         ax.axhline(0, color=TH['axis'], lw=1)
         ax.set_xlim(0, 720)
         ax.set_xticks(range(0, 721, 180))
-        ax.set_ylim(1.35 * self.total.min(), 1.2 * self.total.max())
+        top = max(self.total.max(), float(np.max(d['T0'])))
+        ax.set_ylim(1.35 * min(self.total.min(), float(np.min(d['T0']))), 1.12 * top)
         ax.set_xlabel('engine crank angle (degrees)', fontsize=12, color=TH['muted'], labelpad=2)
         self.t_cursor = ax.axvline(0, color='#ffffff', lw=1.2, alpha=0.5)
         self.t_dot, = ax.plot([], [], 'o', ms=9, color=TH['text'], mec=TH['bg'], mew=1.5)
@@ -320,10 +325,10 @@ class Header:
                  va='center')
         self.angle = fig.text(0.97, 0.912, '', fontsize=34, color=TH['text'], ha='right',
                               va='center', family='IBM Plex Mono')
-        stats = [(f"{s['power_kw']:.1f} kW", 'indicated power'),
-                 (f"{s['mean_torque']:.0f} N·m", 'mean torque'),
-                 (f"{s['peak_pressure_atm']:.1f} atm", 'peak cylinder pressure'),
-                 (f"{100 * s['efficiency']:.0f}%", 'fuel conversion efficiency'),
+        stats = [(f"{s['power_kw']:.1f} kW", f"brake power at {s['rpm']:.0f} rpm"),
+                 (f"{s['torque']:.0f} N·m", 'brake torque'),
+                 (f"{s['peak_pressure_bar']:.0f} bar", 'peak cylinder pressure'),
+                 (f"{100 * s['efficiency']:.0f}%", 'brake fuel conversion efficiency'),
                  (f"{s['flywheel_cm']:.1f} cm", 'flywheel radius, 4% fluctuation')]
         for j, (big, small) in enumerate(stats):
             x = 0.03 + j * 0.19
