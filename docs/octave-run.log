@@ -1,0 +1,42 @@
+>> constants
+done
+>> part1
+done
+>> part2
+Iteration: 1, Error: 43.387934, Temp: 343.39
+Iteration: 2, Error: 1.538059, Temp: 344.93
+Iteration: 3, Error: 0.044090, Temp: 344.97
+Iteration: 4, Error: 0.088050, Temp: 345.06
+Iteration: 5, Error: 0.040864, Temp: 345.02
+Iteration: 6, Error: 0.005467, Temp: 345.01
+Converged with error 0.005467 after 6 iterations
+Intersection Angles (degrees):
+   222   248   362   478   581   617
+Intersection Angles (degrees):
+   362   478   581   617
+Engine Work per Cycle: 459.3280 J
+Indicated Power: 7655.4671 W
+Mean Effective Pressure (MEP): 434.6850 kPa
+Friction Power: 765.5467 W
+Mechanical Efficiency: 0.9000
+Brake Power: 6889.9204 W
+Brake Mean Effective Pressure (BMEP): 391.2165 kPa
+Thermodynamic Torque: 32.9136 Nm
+Fuel Mass Flow Rate: 0.0006 kg/s
+Fuel Conversion Efficiency: 0.2822
+Specific Fuel Consumption (SFC): 0.0000000815 mg/J
+Volumetric Efficiency: 0.4716
+Piston Speed: 6.2000 m/s
+Engine Power: 30.6219 kW
+
+Energy of flywheel: 369.1233 J
+Flywheel Radius: 0.1361 m
+Average Torque: 36.5551 Nm
+
+phi1 = 1.2263
+phi2 = 1.0337
+iAmin = 0.64326
+iAmax = 5.386
+Gear Ratios (iA):
+   5.3860   3.5991   2.4861   1.7753   1.3105   1.0000   0.7888   0.6433
+
