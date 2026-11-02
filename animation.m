@@ -1,131 +1,69 @@
-clear al; clc;
-
+clear all; clc;
+%% The four cylinders running, drawn from the results of part1.m and part2.m
 load('part2.mat')
 
-coupler_length = coupler_length *100;
-crank_length = crank_length * 100;
-s_length0 = 100*s_length0;
-c_length0 = 100*s_length0;
+offset = [0 540 180 360];           % where each cylinder is in its cycle: firing 1-3-4-2
+cycles = 2;                         % cycles to play
+step = 2;                           % crank degrees per frame
 
-bore = 100*bore;
+% geometry in mm, with the engine upright: Y up the cylinder axis
+r = 1e3*crank_length; Bh = 1e3*bore/2; pitch = 2.2*r;
+pin_to_crown = 30;                  % piston pin to crown (mm)
+clearance = 1e3*vdisp0/(rc0 - 1)/A_cyl;
+deck = 1e3*max(s_length0) + pin_to_crown + clearance;
+head = 30;
+phase_name = {'intake', 'compression', 'combustion', 'expansion', 'exhaust'};
+phase_end = [intake_end compression_end combustion_end expansion_end exhaust_end];
+visible = {'off', 'on'};
 
-combustion_shift = combustion_shift - 5;
+fig = figure('Name', 'Four-cylinder engine', 'Color', 'w');
+axes('Position', [0.03 0.08 0.94 0.84]); hold on; axis equal; axis off;
+xlim([-Bh - 40, 3*pitch + Bh + 40]); ylim([-r - 60, deck + head + 20]);
+for k = 1:4
+  xc = (k - 1)*pitch;
+  % cylinder walls and head
+  plot([xc - Bh, xc - Bh, xc + Bh, xc + Bh], [1e3*min(s_length0) - 30, deck, deck, 1e3*min(s_length0) - 30], ...
+       'k', 'LineWidth', 1.5);
+  patch([xc - Bh - 6, xc + Bh + 6, xc + Bh + 6, xc - Bh - 6], [deck, deck, deck + head, deck + head], ...
+        [0.75 0.75 0.78], 'EdgeColor', 'k');
+  h(k).gas = patch(xc + [-Bh Bh Bh -Bh], [0 0 1 1], [0.2 0.3 0.6], 'EdgeColor', 'none');
+  h(k).piston = patch(xc + [-Bh Bh Bh -Bh] * 0.98, [0 0 1 1], [0.6 0.62 0.66], 'EdgeColor', 'k');
+  h(k).rod = plot([0 0], [0 0], 'Color', [0.35 0.35 0.4], 'LineWidth', 5);
+  h(k).crank = plot([0 0], [0 0], 'Color', [0.2 0.2 0.25], 'LineWidth', 7);
+  h(k).valve_in = plot([0 0], [0 0], 'b', 'LineWidth', 3);
+  h(k).valve_ex = plot([0 0], [0 0], 'r', 'LineWidth', 3);
+  h(k).spark = plot(xc, deck - 3, 'p', 'MarkerSize', 16, 'MarkerFaceColor', 'y', 'MarkerEdgeColor', [1 0.5 0]);
+  plot(xc, 0, 'ko', 'MarkerFaceColor', 'k');
+  h(k).label = text(xc, -r - 35, '', 'HorizontalAlignment', 'center', 'FontSize', 11);
+  text(xc, -r - 15, sprintf('Cylinder %d', k), 'HorizontalAlignment', 'center', 'FontWeight', 'bold');
+end
+ttl = title('', 'FontSize', 13);
 
-o1_x = 0; o1_y = 0;
-o2_x = (2.2*crank_length); o2_y = 0;
-o3_x = 2*(2.2*crank_length); o3_y = 0;
-o4_x = 3*(2.2*crank_length); o4_y = 0;
-
-figure;
-vclear= vdisp0/(rc0 -1);
-dclear = 400*vclear/(pi*(bore/100)^2);
-
-plot_width = (o4_x - o1_x);
-plot_offset = crank_length + 3;
-plot_length = max(s_length0) + bore/4 +  dclear;
-
-crank_angle_shifted= circshift(crank_angle, 180);
-s_length_shifted = circshift(s_length0, 180);
-
-for i=1:length(crank_angle)
-set(gcf, 'Position', get(0, 'ScreenSize'));  % Maximizes the window to full screen
-
-crank_x1 = o1_x + crank_length * sind(crank_angle(i));
-crank_x2 = o2_x + crank_length * sind(crank_angle_shifted(i));
-crank_x3 = o3_x + crank_length * sind(crank_angle_shifted(i));
-crank_x4 = o4_x + crank_length * sind(crank_angle(i));
-
-crank_y1 = o1_y + crank_length * cosd(crank_angle(i));
-crank_y2 = o2_y + crank_length * cosd(crank_angle_shifted(i));
-crank_y3 = o3_y + crank_length * cosd(crank_angle_shifted(i));
-crank_y4 = o4_y + crank_length * cosd(crank_angle(i));
-
-coupler_x1 = o1_x;
-coupler_x2 = o2_x;
-coupler_x3 = o3_x;
-coupler_x4 = o4_x;
-
-coupler_y1 = o1_y + s_length0(i);
-coupler_y2 = o2_y + s_length_shifted(i);
-coupler_y3 = o3_y + s_length_shifted(i);
-coupler_y4 = o4_y + s_length0(i);
-
-% Plotting the lines with color attributes
-plot([o1_x crank_x1], [o1_y crank_y1], 'b', 'LineWidth', 1); % Crank 1 (red)
-hold on;
-
-% Plotting the joints
-plot(o1_x, o1_y, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-plot(o2_x, o2_y, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-plot(o3_x, o3_y, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-plot(o4_x, o4_y, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-
-plot(crank_x1, crank_y1, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-plot(crank_x2, crank_y2, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-plot(crank_x3, crank_y3, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-plot(crank_x4, crank_y4, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-
-plot(coupler_x1, coupler_y1, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-plot(coupler_x2, coupler_y2, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-plot(coupler_x3, coupler_y3, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-plot(coupler_x4, coupler_y4, 'o', 'MarkerSize', 4, 'MarkerEdgeColor', 'r', 'MarkerFaceColor', 'r')
-
-plot([crank_x1 coupler_x1], [crank_y1 coupler_y1], 'b', 'LineWidth', 1); % Coupler 1 (green)
-plot([o2_x crank_x2], [o2_y crank_y2], 'b', 'LineWidth', 1); % Crank 2 (red)
-plot([crank_x2 coupler_x2], [crank_y2 coupler_y2], 'b', 'LineWidth', 1); % Coupler 2 (green)
-plot([o3_x crank_x3], [o3_y crank_y3], 'b', 'LineWidth', 1); % Crank 3 (red)
-plot([crank_x3 coupler_x3], [crank_y3 coupler_y3], 'b', 'LineWidth', 1); % Coupler 3 (green)
-plot([o4_x crank_x4], [o4_y crank_y4], 'b', 'LineWidth', 1); % Crank 4 (red)
-plot([crank_x4 coupler_x4], [crank_y4 coupler_y4], 'b', 'LineWidth', 1); % Coupler 4 (green)
-
-% Plotting vertical lines (for each mechanism)
-plot([o1_x-bore/4 o1_x-bore/4], [min(s_length0)-bore/4 max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
-plot([o2_x-bore/4 o2_x-bore/4], [min(s_length_shifted)-bore/4 max(s_length_shifted)+bore/4+dclear], 'k', 'LineWidth', 1);
-plot([o3_x-bore/4 o3_x-bore/4], [min(s_length_shifted)-bore/4 max(s_length_shifted)+bore/4+dclear], 'k', 'LineWidth', 1);
-plot([o4_x-bore/4 o4_x-bore/4], [min(s_length0)-bore/4 max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
-
-% Plotting horizontal lines
-plot([o1_x+bore/4 o1_x+bore/4], [min(s_length0)-bore/4 max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
-plot([o2_x+bore/4 o2_x+bore/4], [min(s_length_shifted)-bore/4 max(s_length_shifted)+bore/4+dclear], 'k', 'LineWidth', 1);
-plot([o3_x+bore/4 o3_x+bore/4], [min(s_length_shifted)-bore/4 max(s_length_shifted)+bore/4+dclear], 'k', 'LineWidth', 1);
-plot([o4_x+bore/4 o4_x+bore/4], [min(s_length0)-bore/4 max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
-
-% Plotting top lines
-plot([o1_x-bore/4 o1_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
-plot([o2_x-bore/4 o2_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
-plot([o3_x-bore/4 o3_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
-plot([o4_x-bore/4 o4_x+bore/4], [max(s_length0)+bore/4+dclear max(s_length0)+bore/4+dclear], 'k', 'LineWidth', 1);
-
-if crank_angle(i) >= (combustion_start-360 + combustion_shift) && crank_angle(i) <= (combustion_end-360-combustion_shift)
-    % Draw the rectangle only if the angle is between alpha and beta
-    rectangle('Position', [o1_x-bore/4, max(s_length0)+bore/4, bore/2, dclear], 'FaceColor', '#FF4500');
+for cyc_n = 1:cycles
+  for i = 1:step:720
+    if ~ishandle(fig)
+      break
+    end
+    for k = 1:4
+      j = mod(i - offset(k) - 1, 720) + 1;          % this cylinder's own crank angle
+      xc = (k - 1)*pitch;
+      s = 1e3*s_length0(j);
+      pin = [xc - r*sind(j), r*cosd(j)];
+      crown = s + pin_to_crown;
+      t = min(max((temp(j) - 300)/2200, 0), 1);     % cool charge blue, burned gas red to white
+      colour = [min(1, 0.15 + 1.6*t), min(1, max(0, 2*t - 0.6)), max(0, 0.6 - 0.9*t)];
+      set(h(k).gas, 'YData', [crown; crown; deck; deck], 'FaceColor', colour);
+      set(h(k).piston, 'YData', [s - 25; s - 25; crown; crown]);
+      set(h(k).rod, 'XData', [pin(1) xc], 'YData', [pin(2) s]);
+      set(h(k).crank, 'XData', [xc pin(1)], 'YData', [0 pin(2)]);
+      li = 1e3*lift_in(j); le = 1e3*lift_ex(j);
+      set(h(k).valve_in, 'XData', xc - 20 + [-12 12], 'YData', deck - [li li]);
+      set(h(k).valve_ex, 'XData', xc + 20 + [-12 12], 'YData', deck - [le le]);
+      set(h(k).spark, 'Visible', visible{1 + (abs(j - combustion_start) <= 4)});
+      set(h(k).label, 'String', phase_name{find(j <= phase_end, 1)});
+    end
+    set(ttl, 'String', sprintf('Crank angle %3d deg   |   %d rpm   |   firing order 1-3-4-2', i, rpm));
+    drawnow;
+  end
 end
 
-if crank_angle(i) >= (combustion_start-180 + combustion_shift) && crank_angle(i) <= (combustion_end-180-combustion_shift)
-    % Draw the rectangle only if the angle is between alpha and beta
-    rectangle('Position', [o3_x-bore/4, max(s_length0)+bore/4, bore/2, dclear], 'FaceColor', '#FF4500');
-end
-
-if crank_angle(i) >= (combustion_start + combustion_shift) && crank_angle(i) <= combustion_end-combustion_shift
-    % Draw the rectangle only if the angle is between alpha and beta
-    rectangle('Position', [o4_x-bore/4, max(s_length_shifted)+bore/4, bore/2, dclear], 'FaceColor', '#FF4500');
-end
-
-if crank_angle(i) >= (combustion_start+combustion_shift+180) && crank_angle(i) <= combustion_end+180-combustion_shift
-    % Draw the rectangle only if the angle is between alpha and beta
-    rectangle('Position', [o2_x-bore/4, max(s_length_shifted)+bore/4, bore/2, dclear], 'FaceColor', '#FF4500');
-end
-
-% Set axis equal to maintain aspect ratio
-axis equal;
-axis([o1_x-plot_offset, plot_width+plot_offset, o1_y-plot_offset, plot_length+plot_offset])
- 
-rectangle('Position', [coupler_x1-bore/4 coupler_y1-bore/4 bore/2 bore/2])
-rectangle('Position', [coupler_x2-bore/4 coupler_y2-bore/4 bore/2 bore/2])
-rectangle('Position', [coupler_x3-bore/4 coupler_y3-bore/4 bore/2 bore/2])
-rectangle('Position', [coupler_x4-bore/4 coupler_y4-bore/4 bore/2 bore/2])
-
-pause(0.000001);
-hold off;
-
-end
